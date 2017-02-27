@@ -654,7 +654,7 @@ $(document).ready(function () {
                 refill = false;
                 nextBoss = "";
                 hitdelay.css({
-                    "width": health.css("width"),
+                    "width": ((hp / hpAmnt) * 100).toString() + "%",
                     "visibility": "visible"
                 });
             }

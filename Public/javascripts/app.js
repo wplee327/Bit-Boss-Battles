@@ -565,8 +565,10 @@ $(document).ready(function () {
                 
                 // Reset the name scroll animation.
                 $("#name").stop().css("margin-left", "0px");
-                if (scrollDelay != null && scrollDelay != -1) { clearTimeout(scrollDelay); scrollDelay = null; }
-                if (resetDelay != null) { clearTimeout(resetDelay); resetDelay = null; }
+                if (scrollDelay != null) { clearTimeout(scrollDelay); }
+                if (resetDelay != null) { clearTimeout(resetDelay); }
+                scrollDelay = null;
+                resetDelay = null;
                 
                 // Transition from preload state to refill state.
                 refill = true;

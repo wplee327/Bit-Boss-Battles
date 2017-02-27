@@ -1,5 +1,5 @@
 Bit Boss Battles
-v1.0.6: Release
+v1.0.6.1: Release
 
 This software is provided "as-is" with no warranties.
 
@@ -30,8 +30,11 @@ Bit Boss Battles requires authorization in order to listen for bits notification
 
 CHANGELOG:
 
+v1.0.6.1:
+- More robust Name Scroll reset. Prevents an issue which breaks name scrolling.
+
 v1.0.6:
-- Added Progressive HP mode.
+- Added Progressive HP mode. Closes #7 enhancement.
   - The first Bit Boss starts with an initial HP amount.
   - Each successive Bit Boss has a progressively incremented HP amount.
 - Changing HP modes now resets the current boss and their HP.

@@ -8,18 +8,33 @@ $(document).ready(function() {
     if (getCookie("persistent", "") == "true") { $("#persistent").prop("checked", true); }
     if (getCookie("bossheal", "") == "true") { $("#bossheal").prop("checked", true); }
     
-    if (getCookie("hptype", "overkill") == "constant")
+    var hpMode = getCookie("hptype", "overkill");
+    
+    if (hpMode == "progress")
+    {
+        $("input[type='radio'][name='hp'][value='progress']").click();
+        
+        $(".subsettings.showing").removeClass("showing").addClass("hidden");
+        $("#settings-progress").removeClass("hidden").addClass("showing");
+
+        $("p.showing").removeClass("showing").addClass("hidden");
+        $("#expl-progress").removeClass("hidden").addClass("showing");
+    }
+    else if (hpMode == "constant")
     {
         $("input[type='radio'][name='hp'][value='constant']").click();
         
-        $("#hp-amnt").prop("disabled", false);
-        $("#hp-init").prop("disabled", true);
-        $("#hp-mult").prop("disabled", true);
+        $(".subsettings.showing").removeClass("showing").addClass("hidden");
+        $("#settings-constant").removeClass("hidden").addClass("showing");
+
+        $("p.showing").removeClass("showing").addClass("hidden");
+        $("#expl-constant").removeClass("hidden").addClass("showing");
     }
     
-    if (getCookie("hpmult", "") != "") { $("#hp-mult").val(parseInt(getCookie("hpmult", "")) || 1) }
-    if (getCookie("hpinit", "") != "") { $("#hp-init").val(parseInt(getCookie("hpinit", "")) || 1000) }
-    if (getCookie("hpamnt", "") != "") { $("#hp-amnt").val(parseInt(getCookie("hpamnt", "")) || 1000) }
+    if (getCookie("hpmult", "") != "") { $("#hp-mult").val(parseInt(getCookie("hpmult", "")) || 1); }
+    if (getCookie("hpinit", "") != "") { $("#hp-o-init").val(parseInt(getCookie("hpinit", "")) || 1000); $("#hp-p-init").val($("#hp-o-init").val()); }
+    if (getCookie("hpincr", "") != "") { $("#hp-incr").val(parseInt(getCookie("hpincr", "")) || 100); }
+    if (getCookie("hpamnt", "") != "") { $("#hp-amnt").val(parseInt(getCookie("hpamnt", "")) || 1000); }
     
     $("#sound").click(function() {
         
@@ -48,18 +63,34 @@ $(document).ready(function() {
     
     $("input[type='radio'][name='hp']").change(function() {
         
+        setCookie("currentBoss", "");
+        setCookie("currentHp", "0");
+        setCookie("maxHp", "0");
+        
         setCookie("hptype", $(this).val());
         if ($(this).val() == "overkill")
         {
-            $("#hp-mult").prop("disabled", false);
-            $("#hp-init").prop("disabled", false);
-            $("#hp-amnt").prop("disabled", true);
+            $(".subsettings.showing").removeClass("showing").addClass("hidden");
+            $("#settings-overkill").removeClass("hidden").addClass("showing");
+            
+            $("p.showing").removeClass("showing").addClass("hidden");
+            $("#expl-overkill").removeClass("hidden").addClass("showing");
+        }
+        else if ($(this).val() == "progress")
+        {
+            $(".subsettings.showing").removeClass("showing").addClass("hidden");
+            $("#settings-progress").removeClass("hidden").addClass("showing");
+            
+            $("p.showing").removeClass("showing").addClass("hidden");
+            $("#expl-progress").removeClass("hidden").addClass("showing");
         }
         else if ($(this).val() == "constant")
         {
-            $("#hp-amnt").prop("disabled", false);
-            $("#hp-init").prop("disabled", true);
-            $("#hp-mult").prop("disabled", true);
+            $(".subsettings.showing").removeClass("showing").addClass("hidden");
+            $("#settings-constant").removeClass("hidden").addClass("showing");
+            
+            $("p.showing").removeClass("showing").addClass("hidden");
+            $("#expl-constant").removeClass("hidden").addClass("showing");
         }
     });
     
@@ -68,9 +99,21 @@ $(document).ready(function() {
         setCookie("hpmult", $(this).val().toString());
     });
     
-    $("#hp-init").change(function() {
+    $("#hp-o-init").change(function() {
         
         setCookie("hpinit", $(this).val().toString());
+        $("#hp-p-init").val($(this).val());
+    });
+    
+    $("#hp-p-init").change(function() {
+        
+        setCookie("hpinit", $(this).val().toString());
+        $("#hp-o-init").val($(this).val());
+    });
+    
+    $("#hp-incr").change(function() {
+        
+        setCookie("hpincr", $(this).val().toString());
     });
     
     $("#hp-amnt").change(function() {

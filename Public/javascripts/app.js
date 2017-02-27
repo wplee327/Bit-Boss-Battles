@@ -42,6 +42,8 @@ $(document).ready(function () {
     var hpType = "overkill";
     var hpMult = 1;
     var hpAmnt = 1000;
+    var hpIncr = 100;
+    var dontIncr = true;
     var bossHeal = false;
     
     // HP variables
@@ -120,7 +122,8 @@ $(document).ready(function () {
         // Get HP settings.
         hpType = GetUrlParameter("hptype") || hpType;
         hpMult = parseInt(GetUrlParameter("hpmult")) || hpMult;
-        hpAmnt = (hpType == "overkill" ? parseInt(GetUrlParameter("hpinit")) || hpAmnt : parseInt(GetUrlParameter("hpamnt")) || hpAmnt);
+        hpAmnt = (hpType != "constant" ? parseInt(GetUrlParameter("hpinit")) || hpAmnt : parseInt(GetUrlParameter("hpamnt")) || hpAmnt);
+        hpIncr = parseInt(GetUrlParameter("hpincr")) || hpIncr;
         
         // Get Boss Heal setting.
         bossHeal = (GetUrlParameter("bossheal") == "true");
@@ -153,7 +156,8 @@ $(document).ready(function () {
         // Get HP settings.
         hpType = getCookie("hptype", "overkill");
         hpMult = parseInt(getCookie("hpmult", "1"));
-        hpAmnt = (hpType == "overkill" ? parseInt(getCookie("hpinit", "") || hpAmnt) : parseInt(getCookie("hpamnt", "")) || hpAmnt);
+        hpAmnt = (hpType != "constant" ? parseInt(getCookie("hpinit", "") || hpAmnt) : parseInt(getCookie("hpamnt", "")) || hpAmnt);
+        hpIncr = parseInt(getCookie("hpinit", "100"));
         
         // Get Boss Heal setting.
         bossHeal = (getCookie("bossheal", "") == "true");
@@ -231,14 +235,6 @@ $(document).ready(function () {
                     "opacity": "0"
                 });
                 
-                // Determine the highest bits milestone in the cheer.
-                var amount = "";
-                if (message.bits_used < 100) { amount = "1"; }
-                else if (message.bits_used < 1000) { amount = "100"; }
-                else if (message.bits_used < 5000) { amount = "1000"; }
-                else if (message.bits_used < 10000) { amount = "5000"; }
-                else { amount = "10000"; }
-                
                 // If the attacker is the current Bit Boss,
                 if (info.displayName == $("#name").html())
                 {
@@ -264,8 +260,16 @@ $(document).ready(function () {
         // If the nextBoss variable is empty, then no transition is taking place.
         if (nextBoss == "")
         {
+            // Determine the highest bits milestone in the cheer.
+            var milestone = "";
+            if (amount < 100) { milestone = "1"; }
+            else if (amount < 1000) { milestone = "100"; }
+            else if (amount < 5000) { milestone = "1000"; }
+            else if (amount < 10000) { milestone = "5000"; }
+            else { milestone = "10000"; }
+            
             // Sets the attacker display.
-            $("#attackerdisplay").html("<img id='cheerimg' src='https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/light/animated/" + amount + "/1.gif?a=" + Math.random() + "'>" + display + " heals!");
+            $("#attackerdisplay").html("<img id='cheerimg' src='https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/light/animated/" + milestone + "/1.gif?a=" + Math.random() + "'>" + display + " heals!");
             $("#attackerdisplay").stop().animate({ "opacity": "1" }, 1000, "linear", function() { setTimeout(function() { $("#attackerdisplay").css("opacity", "0"); $("#attackerdisplay").html("&nbsp;"); }, 1000) });
             
             // Remove the current strike gif if it exists.
@@ -292,8 +296,16 @@ $(document).ready(function () {
         // If the nextBoss variable is empty, then no transition is taking place.
         if (nextBoss == "")
         {
+            // Determine the highest bits milestone in the cheer.
+            var milestone = "";
+            if (amount < 100) { milestone = "1"; }
+            else if (amount < 1000) { milestone = "100"; }
+            else if (amount < 5000) { milestone = "1000"; }
+            else if (amount < 10000) { milestone = "5000"; }
+            else { milestone = "10000"; }
+            
             // Sets the attacker display.
-            $("#attackerdisplay").html("<img id='cheerimg' src='https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/light/animated/" + amount + "/1.gif?a=" + Math.random() + "'>" + display + " attacks!");
+            $("#attackerdisplay").html("<img id='cheerimg' src='https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/light/animated/" + milestone + "/1.gif?a=" + Math.random() + "'>" + display + " attacks!");
             $("#attackerdisplay").stop().animate({ "opacity": "1" }, 1000, "linear", function() { setTimeout(function() { $("#attackerdisplay").css("opacity", "0"); $("#attackerdisplay").html("&nbsp;"); }, 1000) });
             
             // Get a random strike image based on the highest cheer milestone.
@@ -338,6 +350,13 @@ $(document).ready(function () {
                     // Update the HP cookies based on the overkill amount and the multiplier.
                     setCookie("currentHp", (overkill * hpMult < 100 ? 100 : overkill * hpMult));
                     setCookie("maxHp", (overkill * hpMult < 100 ? 100 : overkill * hpMult));
+                }
+                // Else, if the current mode is Progressive,
+                else if (hpType == "progress")
+                {
+                    // Update the HP cookies based on the increment setting.
+                    setCookie("currentHp", (hpAmnt + hpIncr).toString());
+                    setCookie("maxHp", (hpAmnt + hpIncr).toString());
                 }
                 // Else, the current mode is Constant.
                 else
@@ -531,6 +550,13 @@ $(document).ready(function () {
                 {
                     // Set the new HP amount based on the overkill with multiplier.
                     hpAmnt = (overkill * hpMult < 100 ? 100 : overkill * hpMult);
+                }
+                // Else, if the widget is in Progressive Mode,
+                else if (hpType == "progress")
+                {
+                    // Increment the new HP amount based on the increment setting.
+                    hpAmnt = hpAmnt + (dontIncr ? 0 : hpIncr);
+                    dontIncr = false;
                 }
                 
                 // Set the name and test labels to the new boss's display name.
@@ -734,8 +760,8 @@ $(document).ready(function () {
     }, (1000/60));
     
 //    Fake("topic", InterpretData);
-    
+//    
 //    $("#fake").click(function() {
-//        InterpretMessage({ data: '{"type":"MESSAGE","data":{"topic":"topic","message":"{\\"user_name\\":\\"nifty255\\",\\"bits_used\\":20,\\"context\\":\\"cheer\\"}"}}' });
+//        InterpretMessage({ data: '{"type":"MESSAGE","data":{"topic":"topic","message":"{\\"user_name\\":\\"mrseniorfloofypants\\",\\"bits_used\\":20,\\"context\\":\\"cheer\\"}"}}' });
 //    });
 });

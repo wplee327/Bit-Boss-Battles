@@ -8,6 +8,7 @@ $(document).ready(function () {
     
     // Settings
     var sound = false;
+    var hideAvtr = false;
 
     // Boss vars
     var nextBoss = "nifty255";
@@ -128,6 +129,9 @@ $(document).ready(function () {
         // Get Boss Heal setting.
         bossHeal = (GetUrlParameter("bossheal") == "true");
         
+        // Get the hidden avatar setting.
+        hideAvtr = (GetUrlParameter("hideavtr") == "true");
+        
         // If Persistence Mode is off,
         if (GetUrlParameter("persistent") != "true" || GetUrlParameter("reset") == "true")
         {
@@ -162,6 +166,9 @@ $(document).ready(function () {
         // Get Boss Heal setting.
         bossHeal = (getCookie("bossheal", "") == "true");
         
+        // Get hidden avatar setting.
+        hideAvtr = (getCookie("hideavtr", "") == "true");
+        
         // If Persistence Mode is off,
         if (getCookie("persistent", "false") != "true")
         {
@@ -170,6 +177,16 @@ $(document).ready(function () {
             setCookie("maxHp", "0");
             setCookie("currentHp", "0");
         }
+    }
+    
+    // If the Hidden Avatar setting is true,
+    if (hideAvtr)
+    {
+        // Hide the image container.
+        $("#imgcontainer").css("display", "none");
+        
+        // Remove the 70px adjustment from the health container.
+        $("#infocontainer").css("width", "100%");
     }
     
     // Assign the maxHp cookie to hpAmnt if it exists.

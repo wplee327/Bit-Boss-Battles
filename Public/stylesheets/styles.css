@@ -7,7 +7,7 @@ span#test { position: fixed; top: 200px; left: 500px; visibility: hidden; margin
 span#attackerdisplay { margin: 0; }
 h5#hp { color: white; position: absolute; margin: 0; padding-left: 10px; font-family: 'Press Start 2P', cursive; top: 50%; -webkit-transform: translateY(-50%); -ms-transform: translateY(-50%); transform: translateY(-50%); z-index: 4; }
 span#loss { visibility: hidden; }
-div.allcontainer { background-color: #222; padding: 5px; width: 340px; height: 90px; }
+div.allcontainer { background-color: #222; padding: 5px; height: 90px; }
 div#imgcontainer { position: relative; display: inline-block; height: 65px; width: 65px; margin-right: 5px; }
 div#infocontainer { display: inline-block; vertical-align: top; width: calc(100% - 70px); }
 div#healthcontainer { position: relative; height: 32px; bottom: 0px; }

@@ -207,7 +207,12 @@ $(document).ready(function () {
     $.ajax({
         url: "https://api.twitch.tv/kraken/user",
         type: "GET",
-        beforeSend: function(xhr){ xhr.setRequestHeader('Authorization', "OAuth " + oauth); xhr.setRequestHeader('Client-Id', clientId); },
+        beforeSend: function(xhr)
+        {
+            xhr.setRequestHeader('Accept', "application/vnd.twitchtv.v5+json");
+            xhr.setRequestHeader('Authorization', "OAuth " + oauth);
+            xhr.setRequestHeader('Client-ID', clientId);
+        },
         success: function(data) {
             
             channelId = data._id;
@@ -612,23 +617,25 @@ $(document).ready(function () {
         if (!callback) { return; }
         
         // Obtain the user information from Twitch.
-        $.get("https://api.twitch.tv/kraken/users/" + username + "?client_id=" + clientId, function(response, status) {
+        $.ajax({
+        url: "https://api.twitch.tv/kraken/users/" + username + "?client_id=" + clientId,
+        type: "GET",
+        beforeSend: function(xhr)
+        {
+            xhr.setRequestHeader('Accept', "application/vnd.twitchtv.v3+json");
+        },
+        success: function(data) {
             
-            // If the operation was a success,
-            if (status == "success")
-            {
-                // Fire the callback.
-                callback({ displayName: response.display_name, logo: response.logo });
-            }
-            // Else, the operation failed, and the widget cannot continue.
-            else
-            {
-                // Log the error and response.
-                console.log("Error: " + status);
-                console.log(response);
-                $("body").html("<h1 style='color: red;'>ERROR. FAILED USER GET.</h1>");
-            }
-        });
+            callback({ displayName: data.display_name, logo: data.logo });
+        },
+        error: function(data) {
+            
+            // Log the error and response.
+            console.log("Error: " + status);
+            console.log(data);
+            $("body").html("<h1 style='color: red;'>ERROR. FAILED USER GET.</h1>");
+        }
+      });
     }
     
     // Gets a random integer between the min (inclusive) and max (inclusive).

@@ -16,6 +16,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'Public')));
 
+// Router setup
+var routes = require('./Subapps/router');
+
 // Start listening
 server.listen(Number(process.env.PORT || "5000"), function() {
 	
@@ -23,10 +26,7 @@ server.listen(Number(process.env.PORT || "5000"), function() {
 });
 
 // Mount the routers.
-app.use('/', function(req, res) {
-    
-    res.redirect("/index.html");
-});
+app.use('/', routes.router);
 
 // Catch 404 and render the 404 page
 app.use(function(req, res, next){

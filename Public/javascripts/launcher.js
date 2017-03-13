@@ -2,14 +2,63 @@ $(document).ready(function() {
     
     parseCookies();
     
+    if (getCookie("auth", "") != "")
+    {
+        InitialSettingsSave();
+    }
+    
     var authWait = setInterval(function() {
 
         parseCookies();
 
-        if (getCookie("auth", "") != "") { $("#launch").prop("disabled", false); $("#link").html("http://bitbossbattles.herokuapp.com/app.html" + SettingsToString() + "&token=" + getCookie("auth", "")); }
+        if (getCookie("auth", "") != "" && getCookie("authchange", "false") == "true")
+        {
+            setCookie("authchange", "false");
+            
+            InitialSettingsSave();
+        }
     }, 250);
     
     var appWindow = null;
+    
+    function InitialSettingsSave() {
+        
+        $("#launch").prop("disabled", false);
+        $("#link").html("http://bitbossbattles.herokuapp.com/app.html?userid=" + getCookie("userid", "") + "&token=" + getCookie("auth", "") + "&rev=" + rev);
+
+        $.ajax({
+            url: "https://api.twitch.tv/kraken/user",
+            type: "GET",
+            beforeSend: function(xhr)
+            {
+                xhr.setRequestHeader('Accept', "application/vnd.twitchtv.v5+json");
+                xhr.setRequestHeader('Authorization', "OAuth " + getCookie("auth", ""));
+                xhr.setRequestHeader('Client-ID', clientId);
+            },
+            success: function(data) {
+
+                userId = data._id;
+                setCookie("userid", userId);
+
+                var settings = {
+                    overwrite: false,
+                    sound: (getCookie("sound", "false") == "true"),
+                    trans: (getCookie("trans", "false") == "true"),
+                    chroma: (getCookie("chroma", "false") == "true"),
+                    persistence: (getCookie("persistent", "false") == "true"),
+                    bossHealing: (getCookie("bossheal", "false") == "true"),
+                    avtrHidden: (getCookie("hideavtr", "false") == "true"),
+                    hpMode: getCookie("hptype", "overkill"),
+                    hpInit: parseInt(getCookie("hpinit", "1000")),
+                    hpMult: parseInt(getCookie("hpmult", "1")),
+                    hpIncr: parseInt(getCookie("hpincr", "100")),
+                    hpAmnt: parseInt(getCookie("hpamnt", "1000"))
+                };
+
+                $.post("/settings/" + userId, settings, function (res) { if (res == "success") { } });
+            }
+        });
+    }
 
     function LaunchAuth() {
 
@@ -31,6 +80,7 @@ $(document).ready(function() {
 
         setCookie("currentBoss", "");
         setCookie("currentHp", "0");
+        setCookie("userid", "");
         setCookie("auth", "");
         $("#launch").prop("disabled", true);
         $("#link").html("<span style='color: red;'>App not yet authorized. Authorize the app to get a link.</span>");

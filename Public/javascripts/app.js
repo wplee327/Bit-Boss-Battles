@@ -4,7 +4,7 @@ $(document).ready(function () {
     var demoMode = false;
     
     // Channel ID
-    var channelId = "";
+    var userId = "";
     
     // Settings
     var sound = false;
@@ -107,48 +107,16 @@ $(document).ready(function () {
     
     parseCookies();
     
-    // If the widget is running from URL parameters,
-    if (GetUrlParameter("token") != null)
-    {
-        // Get the OAuth token.
-        oauth = GetUrlParameter("token");
-        
-        // Get the sound setting.
-        sound = (GetUrlParameter("sound") == "true");
-        
-        // Determine the background mode.
-        if (GetUrlParameter("trans") == "true") { $(".allcontainer").css("background-color", "rgba(0,0,0,0)"); }
-        if (GetUrlParameter("chroma") == "true") { $(".allcontainer").css("background-color", "#00f"); }
-        
-        // Get HP settings.
-        hpType = GetUrlParameter("hptype") || hpType;
-        hpMult = parseInt(GetUrlParameter("hpmult")) || hpMult;
-        hpAmnt = (hpType != "constant" ? parseInt(GetUrlParameter("hpinit")) || hpAmnt : parseInt(GetUrlParameter("hpamnt")) || hpAmnt);
-        hpIncr = parseInt(GetUrlParameter("hpincr")) || hpIncr;
-        
-        // Get Boss Heal setting.
-        bossHeal = (GetUrlParameter("bossheal") == "true");
-        
-        // Get the hidden avatar setting.
-        hideAvtr = (GetUrlParameter("hideavtr") == "true");
-        
-        // If Persistence Mode is off,
-        if (GetUrlParameter("persistent") != "true" || GetUrlParameter("reset") == "true")
-        {
-            // Clear all of the cookies.
-            setCookie("currentBoss", "");
-            setCookie("currentHp", "0");
-            setCookie("maxHp", "0");
-            setCookie("auth", "");
-            setCookie("sound", "");
-            setCookie("trans", "");
-            setCookie("chroma", "");
-        }
-    }
-    else
+    // If the widget is not running from URL parameters, the widget was likely launched from the Launcher Page.
+    if (GetUrlParameter("token") == null && GetUrlParameter("userid") == null)
     {
         // Get the OAuth token.
         oauth = getCookie("auth", "");
+        
+        userId = getCookie("userid", "");
+        
+        // If the auth token wasn't found, error out.
+        if (oauth == "") { $("body").html("<h1 style='color: red;'>ERROR. NO AUTH TOKEN.</h1>"); return; }
         
         // Get the sound setting.
         sound = (getCookie("sound", "") == "true");
@@ -177,64 +145,142 @@ $(document).ready(function () {
             setCookie("maxHp", "0");
             setCookie("currentHp", "0");
         }
+            
+        FinishSetup();
     }
-    
-    // If the Hidden Avatar setting is true,
-    if (hideAvtr)
+    // Else, the widget is running from the URL given on the Launcher Page.
+    else
     {
-        // Hide the image container.
-        $("#imgcontainer").css("display", "none");
+        if (GetUrlParameter("rev") == null) { $("body").html("<h1 style='color: red;'>CRITICAL UPDATE!<br>RE-COPY LINK.</h1>"); return; }
         
-        // Remove the 70px adjustment from the health container.
-        $("#infocontainer").css("width", "100%");
+        $.get("./rev", function(response) {
+            
+            if (response.revision > parseInt(GetUrlParameter("rev")) || 0)
+            {
+                $("body").html("<h1 style='color: red;'>UPDATE! RE-COPY LINK.</h1>");
+                return;
+            }
+            
+            oauth = GetUrlParameter("token");
+            userId = GetUrlParameter("userid");
+
+            // If the auth token wasn't found, error out.
+            if (oauth == null) { $("body").html("<h1 style='color: red;'>ERR. NO AUTH TOKEN.<br>RE-COPY LINK.</h1>"); return; }
+
+            // If the user ID wasn't found, error out.
+            if (userId == null) { $("body").html("<h1 style='color: red;'>ERR. NO USER ID.<br>RE-COPY LINK.</h1>"); return; }
+
+            // Obtain settings from the server.
+            $.get("./settings/" + userId, function(response) {
+
+                if (response.error) { $("body").html("<h1 style='color: red;'>ERR. CAN'T LOAD SETTINGS.</h1>"); return; }
+
+                // Get the sound setting.
+                sound = response.sound;
+
+                // Determine the background mode.
+                if (response.trans) { $(".allcontainer").css("background-color", "rgba(0,0,0,0)"); }
+                if (response.chroma) { $(".allcontainer").css("background-color", "#00f"); }
+
+                // Get HP response.
+                hpType = response.hpMode;
+                hpMult = response.hpMult;
+                hpAmnt = (hpType != "constant" ? response.hpInit : response.hpAmnt);
+                hpIncr = response.hpIncr;
+
+                // Get Boss Heal setting.
+                bossHeal = response.bossHealing;
+
+                // Get hidden avatar setting.
+                hideAvtr = response.avtrHidden;
+
+                // If Persistence Mode is off,
+                if (!response.persistence)
+                {
+                    // Clear all of the cookies.
+                    setCookie("currentBoss", "");
+                    setCookie("maxHp", "0");
+                    setCookie("currentHp", "0");
+                }
+
+                FinishSetup();
+            });
+        })
     }
     
-    // Assign the maxHp cookie to hpAmnt if it exists.
-    var cookieHp = parseInt(getCookie("maxHp", "0"));
-    if (cookieHp != 0)
-    {
-        hpAmnt = cookieHp;
-    }
-    
-    // Error out the widget if no OAuth token is found.
-    if (oauth == "") { $("body").html("<h1 style='color: red;'>ERROR. NO AUTH.</h1>"); return; }
-    
-    // Get the current boss and their current HP, if the cookies exist.
-    nextBoss = getCookie("currentBoss", "");
-    prevHp = Math.min(parseInt(getCookie("currentHp", "0")), hpAmnt);
-    
-    // Obtain the streamer's channel ID. Used to listen to their bits events.
-    $.ajax({
-        url: "https://api.twitch.tv/kraken/user",
-        type: "GET",
-        beforeSend: function(xhr)
+    function FinishSetup() {
+        
+        // If the Hidden Avatar setting is true,
+        if (hideAvtr)
         {
-            xhr.setRequestHeader('Accept', "application/vnd.twitchtv.v5+json");
-            xhr.setRequestHeader('Authorization', "OAuth " + oauth);
-            xhr.setRequestHeader('Client-ID', clientId);
-        },
-        success: function(data) {
-            
-            channelId = data._id;
-            
-            // If no boss was found in the cookies, set the streamer as the next boss.
-            if (nextBoss == "") { nextBoss = data.name; setCookie("currentBoss", nextBoss); }
-            
+            // Hide the image container.
+            $("#imgcontainer").css("display", "none");
+
+            // Remove the 70px adjustment from the health container.
+            $("#infocontainer").css("width", "100%");
+        }
+
+        // Assign the maxHp cookie to hpAmnt if it exists.
+        var cookieHp = parseInt(getCookie("maxHp", "0"));
+        if (cookieHp != 0)
+        {
+            hpAmnt = cookieHp;
+        }
+
+        // Error out the widget if no OAuth token is found.
+        if (oauth == "") { $("body").html("<h1 style='color: red;'>ERROR. NO AUTH.</h1>"); return; }
+
+        // Get the current boss and their current HP, if the cookies exist.
+        nextBoss = getCookie("currentBoss", "");
+        prevHp = Math.min(parseInt(getCookie("currentHp", "0")), hpAmnt);
+        
+        // If no boss was found in the cookies, set the streamer as the next boss.
+        if (nextBoss == "")
+        {
+            $.ajax({
+                url: "https://api.twitch.tv/kraken/users/" + userId,
+                type: "GET",
+                beforeSend: function(xhr)
+                {
+                    xhr.setRequestHeader('Accept', "application/vnd.twitchtv.v5+json");
+                    xhr.setRequestHeader('Client-ID', clientId);
+                },
+                success: function(data) {
+
+                    channelId = data._id;
+
+                    nextBoss = data.name; setCookie("currentBoss", nextBoss);
+
+                    // Connect to Twitch's PubSub system.
+                    Connect("wss://pubsub-edge.twitch.tv", function() {
+
+                        // Initiate getting the next boss.
+                        GetNewBoss();
+
+                        // Listen for bits events using the streamer's channel ID and OAuth token.
+                        Listen("channel-bitsevents." + channelId, oauth, InterpretData);
+                    });
+                },
+                error: function(data) {
+
+                    $("body").html("<h1 style='color: red;'>ERROR. FAILED STREAMER GET.</h1>");
+                    console.log("https://api.twitch.tv/kraken/users/" + userId);
+                }
+              });
+        }
+        else
+        {
             // Connect to Twitch's PubSub system.
             Connect("wss://pubsub-edge.twitch.tv", function() {
-                
+
                 // Initiate getting the next boss.
                 GetNewBoss();
-                
+
                 // Listen for bits events using the streamer's channel ID and OAuth token.
-                Listen("channel-bitsevents." + channelId, oauth, InterpretData);
+                Listen("channel-bitsevents." + userId, oauth, InterpretData);
             });
-        },
-        error: function(data) {
-            
-            $("body").html("<h1 style='color: red;'>ERROR. FAILED STREAMER GET.</h1>");
         }
-      });
+    }
     
     // PubSub Message Callback. Interprets bits event messages.
     function InterpretData(message) {

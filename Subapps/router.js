@@ -42,8 +42,8 @@ router.get('/settings/*', function(req, res) {
     
     User.findOne({ userid: id }, function(err, found) {
         
-        if (err) { res.status(500).json({ error: "Database Error" }); return; }
-        if (found == null) { res.status(404).json({ error: "ID Not Found" }); return; }
+        if (err) { res.json({ error: "Database Error" }); return; }
+        if (found == null) { res.json({ error: "ID Not Found" }); return; }
         
         var settings = {
             sound: found.settings.sound,
@@ -69,6 +69,8 @@ router.post('/settings/*', function(req, res) {
     
     var id = args[args.length - 1];
     
+    if (isNaN(id) || id.length != 8) { res.send("Invalid ID"); return; }
+    
     User.findOne({ userid: id }, function(err, found) {
         
         if (err) { res.status(500).send("Database Error"); return; }
@@ -76,18 +78,35 @@ router.post('/settings/*', function(req, res) {
         var saidUser = found;
         
         var settings = {
-            sound: req.body.sound,
-            trans: req.body.trans,
-            chroma: req.body.chroma,
-            persistence: req.body.persistence,
-            bossHealing: req.body.bossHealing,
-            avtrHidden: req.body.avtrHidden,
-            hpMode: req.body.hpMode,
-            hpInit: req.body.hpInit,
-            hpMult: req.body.hpMult,
-            hpIncr: req.body.hpIncr,
-            hpAmnt: req.body.hpAmnt
+            sound: false,
+            trans: false,
+            chroma: false,
+            persistence: false,
+            bossHealing: false,
+            avtrHidden: false,
+            hpMode: "overkill",
+            hpInit: 1000,
+            hpMult: 1,
+            hpIncr: 100,
+            hpAmnt: 1000
         };
+        
+        if (typeof req.body.sound == "boolean") { settings.sound = req.body.sound; }
+        if (typeof req.body.trans == "boolean") { settings.trans = req.body.trans; }
+        if (typeof req.body.chroma == "boolean") { settings.chroma = req.body.chroma; }
+        if (typeof req.body.persistence == "boolean") { settings.persistence = req.body.persistence; }
+        if (typeof req.body.bossHealing == "boolean") { settings.bossHealing = req.body.bossHealing; }
+        if (typeof req.body.avtrHidden == "boolean") { settings.avtrHidden = req.body.avtrHidden; }
+        
+        if (typeof req.body.hpMode == "string")
+        {
+            if (req.body.hpMode == "overkill" || req.body.hpMode == "progress" || req.body.hpMode == "constant") { settings.hpMode = req.body.hpMode; }
+        }
+        
+        if (typeof req.body.hpInit == "number") { settings.hpInit = req.body.hpInit; }
+        if (typeof req.body.hpMult == "number") { settings.hpMult = req.body.hpMult; }
+        if (typeof req.body.hpIncr == "number") { settings.hpIncr = req.body.hpIncr; }
+        if (typeof req.body.hpAmnt == "number") { settings.hpAmnt = req.body.hpAmnt; }
         
         if (saidUser == null)
         {

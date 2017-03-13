@@ -173,37 +173,47 @@ $(document).ready(function () {
             // Obtain settings from the server.
             $.get("./settings/" + userId, function(response) {
 
-                if (response.error) { $("body").html("<h1 style='color: red;'>ERR. CAN'T LOAD SETTINGS.</h1>"); return; }
-
-                // Get the sound setting.
-                sound = response.sound;
-
-                // Determine the background mode.
-                if (response.trans) { $(".allcontainer").css("background-color", "rgba(0,0,0,0)"); }
-                if (response.chroma) { $(".allcontainer").css("background-color", "#00f"); }
-
-                // Get HP response.
-                hpType = response.hpMode;
-                hpMult = response.hpMult;
-                hpAmnt = (hpType != "constant" ? response.hpInit : response.hpAmnt);
-                hpIncr = response.hpIncr;
-
-                // Get Boss Heal setting.
-                bossHeal = response.bossHealing;
-
-                // Get hidden avatar setting.
-                hideAvtr = response.avtrHidden;
-
-                // If Persistence Mode is off,
-                if (!response.persistence)
+                if (response.error)
                 {
                     // Clear all of the cookies.
                     setCookie("currentBoss", "");
                     setCookie("maxHp", "0");
                     setCookie("currentHp", "0");
-                }
 
-                FinishSetup();
+                    FinishSetup();
+                }
+                else
+                {
+                    // Get the sound setting.
+                    sound = response.sound;
+
+                    // Determine the background mode.
+                    if (response.trans) { $(".allcontainer").css("background-color", "rgba(0,0,0,0)"); }
+                    if (response.chroma) { $(".allcontainer").css("background-color", "#00f"); }
+
+                    // Get HP settings.
+                    hpType = response.hpMode;
+                    hpMult = response.hpMult;
+                    hpAmnt = (hpType != "constant" ? response.hpInit : response.hpAmnt);
+                    hpIncr = response.hpIncr;
+
+                    // Get Boss Heal setting.
+                    bossHeal = response.bossHealing;
+
+                    // Get hidden avatar setting.
+                    hideAvtr = response.avtrHidden;
+
+                    // If Persistence Mode is off,
+                    if (!response.persistence)
+                    {
+                        // Clear all of the cookies.
+                        setCookie("currentBoss", "");
+                        setCookie("maxHp", "0");
+                        setCookie("currentHp", "0");
+                    }
+
+                    FinishSetup();
+                }
             });
         })
     }

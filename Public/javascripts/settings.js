@@ -197,7 +197,7 @@ $(document).ready(function() {
                 else
                 {
                     $('#status').css("background-color", "#ff7f7f");
-                    $('#status').html("Error saving!");
+                    $('#status').html("Error saving: " + res);
                 }
 
                 reset = setTimeout(function() {

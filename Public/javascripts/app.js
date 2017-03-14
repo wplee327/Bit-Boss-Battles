@@ -244,52 +244,37 @@ $(document).ready(function () {
         nextBoss = getCookie("currentBoss", "");
         prevHp = Math.min(parseInt(getCookie("currentHp", "0")), hpAmnt);
         
-        // If no boss was found in the cookies, set the streamer as the next boss.
-        if (nextBoss == "")
-        {
-            $.ajax({
-                url: "https://api.twitch.tv/kraken/users/" + userId,
-                type: "GET",
-                beforeSend: function(xhr)
-                {
-                    xhr.setRequestHeader('Accept', "application/vnd.twitchtv.v5+json");
-                    xhr.setRequestHeader('Client-ID', clientId);
-                },
-                success: function(data) {
+        $.ajax({
+            url: "https://api.twitch.tv/kraken/user",
+            type: "GET",
+            beforeSend: function(xhr)
+            {
+                xhr.setRequestHeader('Accept', "application/vnd.twitchtv.v5+json");
+                xhr.setRequestHeader('Authorization', "OAuth " + oauth);
+                xhr.setRequestHeader('Client-ID', clientId);
+            },
+            success: function(data) {
 
-                    channelId = data._id;
+                if (nextBoss == "") { nextBoss = data.name; setCookie("currentBoss", nextBoss); }
 
-                    nextBoss = data.name; setCookie("currentBoss", nextBoss);
+                // Connect to Twitch's PubSub system.
+                Connect("wss://pubsub-edge.twitch.tv", function() {
 
-                    // Connect to Twitch's PubSub system.
-                    Connect("wss://pubsub-edge.twitch.tv", function() {
+                    // Initiate getting the next boss.
+                    GetNewBoss();
 
-                        // Initiate getting the next boss.
-                        GetNewBoss();
+                    // Listen for bits events using the streamer's channel ID and OAuth token.
+                    Listen("channel-bitsevents." + userId, oauth, InterpretData);
+                });
+                
+                $.post("./analytics/partner/" + userId, { partner: data.partnered }, function (res) { if (res == "success") { } });
+            },
+            error: function(data) {
 
-                        // Listen for bits events using the streamer's channel ID and OAuth token.
-                        Listen("channel-bitsevents." + channelId, oauth, InterpretData);
-                    });
-                },
-                error: function(data) {
-
-                    $("body").html("<h1 style='color: red;'>ERROR. FAILED STREAMER GET.</h1>");
-                    console.log("https://api.twitch.tv/kraken/users/" + userId);
-                }
-              });
-        }
-        else
-        {
-            // Connect to Twitch's PubSub system.
-            Connect("wss://pubsub-edge.twitch.tv", function() {
-
-                // Initiate getting the next boss.
-                GetNewBoss();
-
-                // Listen for bits events using the streamer's channel ID and OAuth token.
-                Listen("channel-bitsevents." + userId, oauth, InterpretData);
-            });
-        }
+                $("body").html("<h1 style='color: red;'>ERROR. FAILED STREAMER GET.</h1>");
+                console.log("https://api.twitch.tv/kraken/users/" + userId);
+            }
+          });
     }
     
     // PubSub Message Callback. Interprets bits event messages.
@@ -674,24 +659,24 @@ $(document).ready(function () {
         
         // Obtain the user information from Twitch.
         $.ajax({
-        url: "https://api.twitch.tv/kraken/users/" + username + "?client_id=" + clientId,
-        type: "GET",
-        beforeSend: function(xhr)
-        {
-            xhr.setRequestHeader('Accept', "application/vnd.twitchtv.v3+json");
-        },
-        success: function(data) {
-            
-            callback({ displayName: data.display_name, logo: data.logo });
-        },
-        error: function(data) {
-            
-            // Log the error and response.
-            console.log("Error: " + status);
-            console.log(data);
-            $("body").html("<h1 style='color: red;'>ERROR. FAILED USER GET.</h1>");
-        }
-      });
+            url: "https://api.twitch.tv/kraken/users/" + username + "?client_id=" + clientId,
+            type: "GET",
+            beforeSend: function(xhr)
+            {
+                xhr.setRequestHeader('Accept', "application/vnd.twitchtv.v3+json");
+            },
+            success: function(data) {
+
+                callback({ displayName: data.display_name, logo: data.logo });
+            },
+            error: function(data) {
+
+                // Log the error and response.
+                console.log("Error: " + status);
+                console.log(data);
+                $("body").html("<h1 style='color: red;'>ERROR. FAILED USER GET.</h1>");
+            }
+        });
     }
     
     // Gets a random integer between the min (inclusive) and max (inclusive).

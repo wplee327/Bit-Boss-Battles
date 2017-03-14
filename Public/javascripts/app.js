@@ -137,6 +137,15 @@ $(document).ready(function () {
         // Get hidden avatar setting.
         hideAvtr = (getCookie("hideavtr", "") == "true");
         
+        // Apply color settings.
+        if (getCookie("trans", "") != "true" && getCookie("chroma", "") != "true") { $("#mainbg").css("background-color", getCookie("colorbg", "#222222")); }
+        $("#background").css("background-color", getCookie("colorhb", "red"));
+        $("#hitdelay").css("background-color", getCookie("colorhm", "orange"));
+        $("#health").css("background-color", getCookie("colorhf", "green"));
+        $("#boss").css("color", getCookie("colortx", "white"));
+        $("#hp").css("color", getCookie("colortx", "white"));
+        $("#attackercontainer").css("color", getCookie("colortx", "white"));
+        
         // If Persistence Mode is off,
         if (getCookie("persistent", "false") != "true")
         {
@@ -202,6 +211,15 @@ $(document).ready(function () {
 
                     // Get hidden avatar setting.
                     hideAvtr = response.avtrHidden;
+                    
+                    // Apply color settings.
+                    if (!response.trans && !response.chroma) { $("#mainbg").css("background-color", response.colorBg); }
+                    $("#background").css("background-color", response.colorHb);
+                    $("#hitdelay").css("background-color", response.colorHm);
+                    $("#health").css("background-color", response.colorHf);
+                    $("#boss").css("color", response.colorTx);
+                    $("#hp").css("color", response.colorTx);
+                    $("#attackercontainer").css("color", response.colorTx);
 
                     // If Persistence Mode is off,
                     if (!response.persistence)

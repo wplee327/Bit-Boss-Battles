@@ -50,7 +50,12 @@ var settingsSchema = {
 	hpInit: Number,
 	hpMult: Number,
 	hpIncr: Number,
-	hpAmnt: Number
+	hpAmnt: Number,
+	colorBg: String,
+	colorHb: String,
+	colorHm: String,
+	colorHf: String,
+	colorTx: String
 }
 
 var userSchema = mongoose.Schema({

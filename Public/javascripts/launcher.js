@@ -52,7 +52,12 @@ $(document).ready(function() {
                     hpInit: parseInt(getCookie("hpinit", "1000")),
                     hpMult: parseInt(getCookie("hpmult", "1")),
                     hpIncr: parseInt(getCookie("hpincr", "100")),
-                    hpAmnt: parseInt(getCookie("hpamnt", "1000"))
+                    hpAmnt: parseInt(getCookie("hpamnt", "1000")),
+                    colorBg: getCookie("colorbg", "rgba(34, 34, 34, 1)"),
+                    colorHb: getCookie("colorhb", "rgba(255, 0, 0, 1)"),
+                    colorHm: getCookie("colorhm", "rgba(255, 165, 0, 1)"),
+                    colorHf: getCookie("colorhf", "rgba(0, 128, 0, 1)"),
+                    colorTx: getCookie("colorhf", "rgba(255, 255, 255, 1)")
                 };
 
                 $.post("/settings/" + userId, settings, function (res) { if (res == "success") { } });
@@ -84,11 +89,6 @@ $(document).ready(function() {
         setCookie("auth", "");
         $("#launch").prop("disabled", true);
         $("#link").html("<span style='color: red;'>App not yet authorized. Authorize the app to get a link.</span>");
-    }
-    
-    function SettingsToString() {
-        
-        return "?sound=" + getCookie("sound", "false") + "&trans=" + getCookie("trans", "false") + "&chroma=" + getCookie("chroma", "false") + "&persistent=" + getCookie("persistent", "false") + "&bossheal=" + getCookie("bossheal", "false") + "&hideavtr=" + getCookie("hideavtr", "false") + "&hptype=" + getCookie("hptype", "overkill") + "&hpmult=" + getCookie("hpmult", "1") + "&hpinit=" + getCookie("hpinit", "1000") + "&hpincr=" + getCookie("hpincr", "100") + "&hpamnt=" + getCookie("hpamnt", "1000");
     }
     
     $("#auth").click(LaunchAuth);

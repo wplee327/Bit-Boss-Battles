@@ -56,7 +56,12 @@ router.get('/settings/*', function(req, res) {
             hpInit: found.settings.hpInit,
             hpMult: found.settings.hpMult,
             hpIncr: found.settings.hpIncr,
-            hpAmnt: found.settings.hpAmnt
+            hpAmnt: found.settings.hpAmnt,
+            colorBg: found.settings.colorBg,
+            colorHb: found.settings.colorHb,
+            colorHm: found.settings.colorHm,
+            colorHf: found.settings.colorHf,
+            colorTx: found.settings.colorTx
         };
         
         res.json(settings);
@@ -88,7 +93,12 @@ router.post('/settings/*', function(req, res) {
             hpInit: 1000,
             hpMult: 1,
             hpIncr: 100,
-            hpAmnt: 1000
+            hpAmnt: 1000,
+            colorBg: "rgba(34, 34, 34, 1)",
+            colorHb: "rgba(255, 0, 0, 1)",
+            colorHm: "rgba(255, 165, 0, 1)",
+            colorHf: "rgba(0, 128, 0, 1)",
+            colorTx: "rgba(255, 255, 255, 1)"
         };
         
         if (typeof(req.body.sound) == "string") { settings.sound = (req.body.sound == "true"); }
@@ -107,6 +117,12 @@ router.post('/settings/*', function(req, res) {
         if (typeof(req.body.hpMult) == "string") { settings.hpMult = (isNaN(parseInt(req.body.hpMult)) ? 1 : parseInt(req.body.hpMult)); }
         if (typeof(req.body.hpIncr) == "string") { settings.hpIncr = (isNaN(parseInt(req.body.hpIncr)) ? 100 : parseInt(req.body.hpIncr)); }
         if (typeof(req.body.hpAmnt) == "string") { settings.hpAmnt = (isNaN(parseInt(req.body.hpAmnt)) ? 1000 : parseInt(req.body.hpAmnt)); }
+        
+        if (typeof(req.body.colorBg) == "string") { settings.colorBg = req.body.colorBg; }
+        if (typeof(req.body.colorHb) == "string") { settings.colorHb = req.body.colorHb; }
+        if (typeof(req.body.colorHm) == "string") { settings.colorHm = req.body.colorHm; }
+        if (typeof(req.body.colorHf) == "string") { settings.colorHf = req.body.colorHf; }
+        if (typeof(req.body.colorTx) == "string") { settings.colorTx = req.body.colorTx; }
         
         if (saidUser == null)
         {

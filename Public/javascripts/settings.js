@@ -19,7 +19,12 @@ $(document).ready(function() {
         hpInit: parseInt(getCookie("hpinit", "1000")),
         hpMult: parseInt(getCookie("hpmult", "1")),
         hpIncr: parseInt(getCookie("hpincr", "100")),
-        hpAmnt: parseInt(getCookie("hpamnt", "1000"))
+        hpAmnt: parseInt(getCookie("hpamnt", "1000")),
+        colorBg: getCookie("colorbg", "rgba(34, 34, 34, 1)"),
+        colorHb: getCookie("colorhb", "rgba(255, 0, 0, 1)"),
+        colorHm: getCookie("colorhm", "rgba(255, 165, 0, 1)"),
+        colorHf: getCookie("colorhf", "rgba(0, 128, 0, 1)"),
+        colorTx: getCookie("colortx", "rgba(255, 255, 255, 1)")
     };
     
     if (settings.sound) { $("#sound").prop("checked", true); }
@@ -54,6 +59,95 @@ $(document).ready(function() {
     if (settings.hpInit != 1000) { $("#hp-o-init").val(settings.hpInit); $("#hp-p-init").val($("#hp-o-init").val()); }
     if (settings.hpIncr != 100) { $("#hp-incr").val(settings.hpIncr); }
     if (settings.hpAmnt != 1000) { $("#hp-amnt").val(settings.hpAmnt); }
+    
+    $("#color-bg").spectrum({
+        
+        color: settings.colorBg,
+        preferredFormat: "rgb",
+        showAlpha: true,
+        showInput: true,
+        change: function(color) {
+            
+            settings.colorBg = color.toRgbString()
+            setCookie("colorbg", settings.colorBg);
+            SendChanges();
+        }
+    });
+    $("#color-hb").spectrum({
+        
+        color: settings.colorHb,
+        preferredFormat: "rgb",
+        showAlpha: true,
+        showInput: true,
+        change: function(color) {
+            
+            settings.colorHb = color.toRgbString()
+            setCookie("colorhb", settings.colorHb);
+            SendChanges();
+        }
+    });
+    $("#color-hm").spectrum({
+        
+        color: settings.colorHm,
+        preferredFormat: "rgb",
+        showAlpha: true,
+        showInput: true,
+        change: function(color) {
+            
+            settings.colorHm = color.toRgbString()
+            setCookie("colorhm", settings.colorHm);
+            SendChanges();
+        }
+    });
+    $("#color-hf").spectrum({
+        
+        color: settings.colorHf,
+        preferredFormat: "rgb",
+        showAlpha: true,
+        showInput: true,
+        change: function(color) {
+            
+            settings.colorHf = color.toRgbString()
+            setCookie("colorhf", settings.colorHf);
+            SendChanges();
+        }
+    });
+    $("#color-tx").spectrum({
+        
+        color: settings.colorTx,
+        preferredFormat: "rgb",
+        showAlpha: true,
+        showInput: true,
+        change: function(color) {
+            
+            settings.colorTx = color.toRgbString()
+            setCookie("colortx", settings.colorTx);
+            SendChanges();
+        }
+    });
+    
+    $("#colorreset").click(function() {
+        
+        settings.colorBg = "rgba(34, 34, 34, 1)";
+        settings.colorHb = "rgba(255, 0, 0, 1)";
+        settings.colorHm = "rgba(255, 165, 0, 1)";
+        settings.colorHf = "rgba(0, 128, 0, 1)";
+        settings.colorTx = "rgba(255, 255, 255, 1)";
+        
+        $("#color-bg").spectrum("set", settings.colorBg);
+        $("#color-hb").spectrum("set", settings.colorHb);
+        $("#color-hm").spectrum("set", settings.colorHm);
+        $("#color-hf").spectrum("set", settings.colorHf);
+        $("#color-tx").spectrum("set", settings.colorTx);
+        
+        setCookie("colorbg", settings.colorBg);
+        setCookie("colorhb", settings.colorHb);
+        setCookie("colorhm", settings.colorHm);
+        setCookie("colorhf", settings.colorHf);
+        setCookie("colortx", settings.colorTx);
+        
+        SendChanges();
+    });
     
     $("#sound").click(function() {
         

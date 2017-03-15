@@ -24,11 +24,6 @@ router.get('/settings', function(req, res) {
 	res.render('settings');
 });
 
-router.get('/about', function(req, res) {
-	
-	res.render('about');
-});
-
 router.get('/rev', function(req, res) {
 	
 	res.json({ revision: process.env.REVISION || 1 });

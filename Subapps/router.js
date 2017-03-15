@@ -123,7 +123,7 @@ router.post('/settings/*', function(req, res) {
         {
             saidUser = new User({ userid: id, partner: false, settings: settings });
         }
-        else if (req.body.overwrite)
+        else if (req.body.overwrite == "true")
         {
             saidUser.settings = settings;
         }

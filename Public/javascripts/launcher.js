@@ -62,7 +62,7 @@ $(document).ready(function() {
                     colorHb: getCookie("colorhb", "rgba(255, 0, 0, 1)"),
                     colorHm: getCookie("colorhm", "rgba(255, 165, 0, 1)"),
                     colorHf: getCookie("colorhf", "rgba(0, 128, 0, 1)"),
-                    colorTx: getCookie("colorhf", "rgba(255, 255, 255, 1)")
+                    colorTx: getCookie("colortx", "rgba(255, 255, 255, 1)")
                 };
 
                 $.post("/settings/" + userId, settings, function (res) { if (res == "success") { } });

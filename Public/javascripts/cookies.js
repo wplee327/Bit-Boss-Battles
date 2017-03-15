@@ -72,3 +72,13 @@ function deleteCookie(name, path) {
 	
 	document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path="+(path ? path : "/");
 }
+
+function clearAllCookies() {
+	
+	var allCookies = cookies;
+	
+	for (var i = 0; i < allCookies.length; i++)
+	{
+		deleteCookie(allCookies[i][0]);
+	}
+}

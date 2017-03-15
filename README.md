@@ -1,5 +1,5 @@
 Bit Boss Battles
-v1.1.1: Release
+v1.1.1.1: Release
 
 This software is provided "as-is" with no warranties.
 
@@ -29,6 +29,11 @@ Bit Boss Battles (BBB) is a viewer interactive bits widget for the Twitch platfo
 Bit Boss Battles requires authorization in order to listen for bits notifications from the Twitch API. BBB requires the "User Read" permission in order to obtain the streamer's user ID (public information) from the token it receives from authorization. Once authorized, BBB stores the token only as a cookie on your browser. BBB's servers DO NOT store ANY personal information about you or your Twitch account.
 
 CHANGELOG:
+
+v1.1.1.1:
+- The Reset button on the launcher page has been replaced with a link.
+- The new Reset link can be used to clear ALL cookies in any browser.
+- The Reset page includes instructions on how to finish a hard reset.
 
 v1.1.1:
 - Streamers can now customize widget colors:

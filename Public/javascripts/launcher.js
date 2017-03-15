@@ -17,6 +17,11 @@ $(document).ready(function() {
             
             InitialSettingsSave();
         }
+		else if (getCookie("auth", "") == "")
+		{
+			$("#launch").prop("disabled", true);
+			$("#link").html("<span style='color: red;'>App not yet authorized. Authorize the app to get a link.</span>");
+		}
     }, 250);
     
     var appWindow = null;
@@ -81,19 +86,9 @@ $(document).ready(function() {
 
         appWindow = window.open("./demo.html", "Demo", "width=350,height=325");
     }
-    function Reset() {
-
-        setCookie("currentBoss", "");
-        setCookie("currentHp", "0");
-        setCookie("userid", "");
-        setCookie("auth", "");
-        $("#launch").prop("disabled", true);
-        $("#link").html("<span style='color: red;'>App not yet authorized. Authorize the app to get a link.</span>");
-    }
     
     $("#auth").click(LaunchAuth);
     $("#force").click(LaunchForce);
     $("#launch").click(LaunchApp);
     $("#demo").click(LaunchDemo);
-    $("#reset").click(Reset);
 });

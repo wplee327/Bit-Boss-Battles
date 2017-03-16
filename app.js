@@ -25,6 +25,18 @@ server.listen(Number(process.env.PORT || "5000"), function() {
 	console.log("Listening...");
 });
 
+app.use(function(req, res, next) {
+	
+	if (req.hostname == "bitbossbattles.herokuapp.com")
+	{
+		res.redirect(301, "http://www.bitbossbattles.io" + req.originalUrl);
+	}
+	else
+	{
+		next();
+	}
+});
+
 // Mount the routers.
 app.use('/', routes.router);
 

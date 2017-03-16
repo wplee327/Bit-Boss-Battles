@@ -29,7 +29,7 @@ $(document).ready(function() {
     function InitialSettingsSave() {
         
         $("#launch").prop("disabled", false);
-        $("#link").html("http://bitbossbattles.herokuapp.com/app.html?userid=" + getCookie("userid", "") + "&token=" + getCookie("auth", "") + "&rev=" + rev);
+        $("#link").html("http://www.bitbossbattles.io/app.html?userid=" + getCookie("userid", "") + "&token=" + getCookie("auth", "") + "&rev=" + rev);
 
         $.ajax({
             url: "https://api.twitch.tv/kraken/user",

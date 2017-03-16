@@ -69,7 +69,7 @@ router.post('/settings/*', function(req, res) {
     
     var id = args[args.length - 1];
     
-    if (isNaN(id) || id.length < 6 || id.length > 8) { res.send("Invalid ID"); return; }
+    if (isNaN(id) || id.length < 6 || id.length > 9) { res.send("Invalid ID"); return; }
     
     User.findOne({ userid: id }, function(err, found) {
         

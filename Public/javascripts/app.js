@@ -174,10 +174,10 @@ $(document).ready(function () {
             userId = GetUrlParameter("userid");
 
             // If the auth token wasn't found, error out.
-            if (oauth == null) { $("body").html("<h1 style='color: red;'>ERR. NO AUTH TOKEN.<br>RE-COPY LINK.</h1>"); return; }
+            if (oauth == null || oauth == "") { $("body").html("<h1 style='color: red;'>ERR. NO AUTH TOKEN.<br>RE-COPY LINK.</h1>"); return; }
 
             // If the user ID wasn't found, error out.
-            if (userId == null) { $("body").html("<h1 style='color: red;'>ERR. NO USER ID.<br>RE-COPY LINK.</h1>"); return; }
+            if (userId == null || userId == "") { $("body").html("<h1 style='color: red;'>ERR. NO USER ID.<br>RE-COPY LINK.</h1>"); return; }
 
             // Obtain settings from the server.
             $.get("./settings/" + userId, function(response) {

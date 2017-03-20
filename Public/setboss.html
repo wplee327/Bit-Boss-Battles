@@ -1,0 +1,49 @@
+<html>
+	<head>
+		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+		<script src="./javascripts/cookies.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				
+				parseCookies();
+				
+				var boss = GetUrlParameter("boss");
+				var current = GetUrlParameter("cur");
+				var max = GetUrlParameter("max");
+				
+				if (boss == null || max == null || current == null) { $("body").html("<p>You're missing a URL parameter! Try re-copying the link.</p>"); return; }
+				
+				max = parseInt(max);
+				current = parseInt(current);
+				
+				if (isNaN(max) || isNaN(current)) { $("body").html("<p>A URL parameter is invalid! Try re-copying the link.</p>"); return; }
+				if (max < current) { $("body").html("<p>The max health is less than the current! Try reconfiguring the boss set form.</p>"); return; }
+				
+				setCookie("currentBoss", boss);
+				setCookie("maxHp", max);
+				setCookie("currentHp", current);
+				
+				$("body").html("<p>There you go! Your boss has been set with the specified current and maximum health. You're free to re-enable Bit Boss Battles.</p>");
+			});
+			
+			// Gets a parameter from the URL.
+			function GetUrlParameter(sParam) {
+
+				var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+					sURLVariables = sPageURL.split('&'),
+					sParameterName,
+					i;
+
+				for (i = 0; i < sURLVariables.length; i++) {
+					sParameterName = sURLVariables[i].split('=');
+
+					if (sParameterName[0] === sParam) {
+						return sParameterName[1] === undefined ? null : sParameterName[1];
+					}
+				}
+			}
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

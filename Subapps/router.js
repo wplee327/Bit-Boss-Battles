@@ -24,6 +24,11 @@ router.get('/settings', function(req, res) {
 	res.render('settings');
 });
 
+router.get('/help', function(req, res) {
+	
+	res.render('help');
+});
+
 router.get('/rev', function(req, res) {
 	
 	res.json({ revision: process.env.REVISION || 1 });

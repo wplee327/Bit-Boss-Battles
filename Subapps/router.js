@@ -141,27 +141,30 @@ router.post('/settings/*', function(req, res) {
     });
 });
 
-router.post('/analytics/partner/*', function(req, res) {
-    
-    var args = req.path.substring(1).split('/');
-    
-    var id = args[args.length - 1];
-    
-    if (isNaN(id) || id.length != 8) { res.send("Invalid ID"); return; }
-    
-    User.findOne({ userid: id }, function(err, found) {
-        
-        if (err) { res.status(500).send("Database Error"); return; }
-        if (found == null) { res.send("Not Found"); return; }
-        
-        found.partner = (req.body.partner == "true");
-        
-        found.save(function(err) {
-            
-            if (err) { res.status(500).send("Database Error"); }
-            else { res.send("success"); }
-        });
-    });
+router.post('/analytics/*', function(req, res) {
+	
+	var args = req.path.substring(1).split('/');
+	
+	var id = args[args.length - 1];
+	
+	if (isNaN(id) || id.length < 6 || id.length > 9) { res.send("Invalid ID"); return; }
+	
+	User.findOne({ userid: id }, function(err, found) {
+		
+		if (err) { res.status(500).send("Database Error"); return; }
+		if (found == null) { res.send("Not Found"); return; }
+		
+		var lastAccess = parseInt(req.body.lastAccess);
+		
+		found.lastAccess = (isNaN(lastAccess) ? 0 : lastAccess);
+		found.partner = (req.body.partner == "true");
+		
+		found.save(function(err) {
+			
+			if (err) { res.status(500).send("Database Error"); }
+			else { res.send("success"); }
+		});
+	});
 });
 
 module.exports = {

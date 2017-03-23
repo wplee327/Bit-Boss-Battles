@@ -285,7 +285,7 @@ $(document).ready(function () {
                     Listen("channel-bitsevents." + userId, oauth, InterpretData);
                 });
                 
-                $.post("./analytics/partner/" + userId, { partner: data.partnered }, function (res) { if (res == "success") { } });
+                $.post("./analytics/" + userId, { lastAccess: new Date().getTime(), partner: data.partnered }, function (res) { if (res == "success") { } });
             },
             error: function(data) {
 

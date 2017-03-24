@@ -27,6 +27,8 @@ $(document).ready(function() {
     var appWindow = null;
     
     function InitialSettingsSave() {
+		
+		setCookie({ name: "auth", newValue: getCookie("auth", ""), secure: true });
         
         $("#launch").prop("disabled", false);
         $("#link").html("http://www.bitbossbattles.io/app.html?userid=" + getCookie("userid", "") + "&token=" + getCookie("auth", "") + "&rev=" + rev);

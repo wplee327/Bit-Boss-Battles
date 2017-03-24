@@ -69,7 +69,7 @@ $(document).ready(function() {
         change: function(color) {
             
             settings.colorBg = color.toRgbString()
-            setCookie("colorbg", settings.colorBg);
+            setCookie({ name: "colorbg", newValue: settings.colorBg });
             SendChanges();
         }
     });
@@ -82,7 +82,7 @@ $(document).ready(function() {
         change: function(color) {
             
             settings.colorHb = color.toRgbString()
-            setCookie("colorhb", settings.colorHb);
+            setCookie({ name: "colorhb", newValue: settings.colorHb });
             SendChanges();
         }
     });
@@ -95,7 +95,7 @@ $(document).ready(function() {
         change: function(color) {
             
             settings.colorHm = color.toRgbString()
-            setCookie("colorhm", settings.colorHm);
+            setCookie({ name: "colorhm", newValue: settings.colorHm });
             SendChanges();
         }
     });
@@ -108,7 +108,7 @@ $(document).ready(function() {
         change: function(color) {
             
             settings.colorHf = color.toRgbString()
-            setCookie("colorhf", settings.colorHf);
+            setCookie({ name: "colorhf", newValue: settings.colorHf });
             SendChanges();
         }
     });
@@ -121,7 +121,7 @@ $(document).ready(function() {
         change: function(color) {
             
             settings.colorTx = color.toRgbString()
-            setCookie("colortx", settings.colorTx);
+            setCookie({ name: "colortx", newValue: settings.colorTx });
             SendChanges();
         }
     });
@@ -140,11 +140,11 @@ $(document).ready(function() {
         $("#color-hf").spectrum("set", settings.colorHf);
         $("#color-tx").spectrum("set", settings.colorTx);
         
-        setCookie("colorbg", settings.colorBg);
-        setCookie("colorhb", settings.colorHb);
-        setCookie("colorhm", settings.colorHm);
-        setCookie("colorhf", settings.colorHf);
-        setCookie("colortx", settings.colorTx);
+        setCookie({ name: "colorbg", newValue: settings.colorBg });
+        setCookie({ name: "colorhb", newValue: settings.colorHb });
+        setCookie({ name: "colorhm", newValue: settings.colorHm });
+        setCookie({ name: "colorhf", newValue: settings.colorHf });
+        setCookie({ name: "colortx", newValue: settings.colorTx });
         
         SendChanges();
     });
@@ -152,53 +152,53 @@ $(document).ready(function() {
     $("#sound").click(function() {
         
         settings.sound = $(this).prop("checked");
-        setCookie("sound", settings.sound.toString());
+        setCookie({ name: "sound", newValue: settings.sound.toString() });
         SendChanges();
     });
     
     $("#trans").click(function() {
         
         settings.trans = $(this).prop("checked");
-        setCookie("trans", settings.trans.toString());
+        setCookie({ name: "trans", newValue: settings.trans.toString() });
         SendChanges();
     });
     
     $("#chroma").click(function() {
         
         settings.chroma = $(this).prop("checked");
-        setCookie("chroma", settings.chroma.toString());
+        setCookie({ name: "chroma", newValue: settings.chroma.toString() });
         SendChanges();
     });
     
     $("#persistent").click(function() {
         
         settings.persistence = $(this).prop("checked");
-        setCookie("persistent", settings.persistence.toString());
+        setCookie({ name: "persistent", newValue: settings.persistence.toString() });
         SendChanges();
     });
     
     $("#bossheal").click(function() {
         
         settings.bossHealing = $(this).prop("checked");
-        setCookie("bossheal", settings.bossHealing.toString());
+        setCookie({ name: "bossheal", newValue: settings.bossHealing.toString() });
         SendChanges();
     });
     
     $("#hideavtr").click(function() {
         
         settings.avtrHidden = $(this).prop("checked");
-        setCookie("hideavtr", settings.avtrHidden.toString());
+        setCookie({ name: "hideavtr", newValue: settings.avtrHidden.toString() });
         SendChanges();
     });
     
     $("input[type='radio'][name='hp']").change(function() {
         
-        setCookie("currentBoss", "");
-        setCookie("currentHp", "0");
-        setCookie("maxHp", "0");
+        setCookie({ name: "currentBoss", newValue: "" });
+        setCookie({ name: "currentHp", newValue: "0" });
+        setCookie({ name: "maxHp", newValue: "0" });
         
         settings.hpMode = $(this).val();
-        setCookie("hptype", settings.hpMode);
+        setCookie({ name: "hptype", newValue: settings.hpMode });
         SendChanges();
         
         if ($(this).val() == "overkill")
@@ -230,14 +230,14 @@ $(document).ready(function() {
     $("#hp-mult").change(function() {
         
         settings.hpMult = $(this).val();
-        setCookie("hpmult", settings.hpMult.toString());
+        setCookie({ name: "hpmult", newValue: settings.hpMult.toString() });
         SendChanges();
     });
     
     $("#hp-o-init").change(function() {
         
         settings.hpInit = $(this).val();
-        setCookie("hpinit", settings.hpInit.toString());
+        setCookie({ name: "hpinit", newValue: settings.hpInit.toString() });
         $("#hp-p-init").val(settings.hpInit);
         SendChanges();
     });
@@ -245,7 +245,7 @@ $(document).ready(function() {
     $("#hp-p-init").change(function() {
         
         settings.hpInit = $(this).val();
-        setCookie("hpinit", settings.hpInit.toString());
+        setCookie({ name: "hpinit", newValue: settings.hpInit.toString() });
         $("#hp-o-init").val(settings.hpInit);
         SendChanges();
     });
@@ -253,14 +253,14 @@ $(document).ready(function() {
     $("#hp-incr").change(function() {
         
         settings.hpIncr = $(this).val();
-        setCookie("hpincr", settings.hpIncr.toString());
+        setCookie({ name: "hpincr", newValue: settings.hpIncr.toString() });
         SendChanges();
     });
     
     $("#hp-amnt").change(function() {
         
         settings.hpAmnt = $(this).val();
-        setCookie("hpamnt", settings.hpAmnt.toString());
+        setCookie({ name: "hpamnt", newValue: settings.hpAmnt.toString() });
         SendChanges();
     });
     

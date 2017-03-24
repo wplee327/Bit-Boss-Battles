@@ -13,7 +13,7 @@ $(document).ready(function() {
 
         if (getCookie("auth", "") != "" && getCookie("authchange", "false") == "true")
         {
-            setCookie("authchange", "false");
+            setCookie({ name: "authchange", newValue: "false" });
             
             InitialSettingsSave();
         }
@@ -43,7 +43,7 @@ $(document).ready(function() {
             success: function(data) {
 
                 userId = data._id;
-                setCookie("userid", userId);
+                setCookie({ name: "userid", newValue: userId });
 
                 var settings = {
                     overwrite: false,

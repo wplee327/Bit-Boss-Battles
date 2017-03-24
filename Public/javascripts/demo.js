@@ -163,7 +163,6 @@ $(document).ready(function () {
             if (imgRemove != null) { clearTimeout(imgRemove); }
             
             loss -= amount;
-            setCookie("currentHp", Math.min(hp - loss, maxHp).toString());
 
             isDelayed = true;
 
@@ -219,13 +218,6 @@ $(document).ready(function () {
                 
                 nextBoss = attacker;
                 counter.html("Final Blow: " + display);
-                
-                setCookie("currentBoss", nextBoss);
-                setCookie("currentHp", maxHp.toString());
-            }
-            else
-            {
-                setCookie("currentHp", (hp - loss).toString());
             }
 
             isDelayed = true;

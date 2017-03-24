@@ -150,9 +150,9 @@ $(document).ready(function () {
         if (getCookie("persistent", "false") != "true")
         {
             // Clear all of the cookies.
-            setCookie("currentBoss", "");
-            setCookie("maxHp", "0");
-            setCookie("currentHp", "0");
+            setCookie({ name: "currentBoss", newValue: "" });
+            setCookie({ name: "maxHp", newValue: "0" });
+            setCookie({ name: "currentHp", newValue: "0" });
         }
             
         FinishSetup();
@@ -185,9 +185,9 @@ $(document).ready(function () {
                 if (response.error)
                 {
                     // Clear all of the cookies.
-                    setCookie("currentBoss", "");
-                    setCookie("maxHp", "0");
-                    setCookie("currentHp", "0");
+                    setCookie({ name: "currentBoss", newValue: "" });
+                    setCookie({ name: "maxHp", newValue: "0" });
+                    setCookie({ name: "currentHp", newValue: "0" });
 
                     FinishSetup();
                 }
@@ -225,9 +225,9 @@ $(document).ready(function () {
                     if (!response.persistence)
                     {
                         // Clear all of the cookies.
-                        setCookie("currentBoss", "");
-                        setCookie("maxHp", "0");
-                        setCookie("currentHp", "0");
+                        setCookie({ name: "currentBoss", newValue: "" });
+                        setCookie({ name: "maxHp", newValue: "0" });
+                        setCookie({ name: "currentHp", newValue: "0" });
                     }
 
                     FinishSetup();
@@ -273,7 +273,7 @@ $(document).ready(function () {
             },
             success: function(data) {
 
-                if (nextBoss == "") { nextBoss = data.name; setCookie("currentBoss", nextBoss); }
+                if (nextBoss == "") { nextBoss = data.name; setCookie({ name: "currentBoss", newValue: nextBoss }); }
 
                 // Connect to Twitch's PubSub system.
                 Connect("wss://pubsub-edge.twitch.tv", function() {
@@ -361,7 +361,7 @@ $(document).ready(function () {
             loss -= amount;
             
             // Update the current HP of the boss.
-            setCookie("currentHp", Math.min(hp - loss, hpAmnt).toString());
+            setCookie({ name: "currentHp", newValue: Math.min(hp - loss, hpAmnt).toString() });
             
             // Reset and start the initial delay.
             isDelayed = true;
@@ -423,35 +423,35 @@ $(document).ready(function () {
                 counter.html("Final Blow: " + display);
                 
                 // Update the current boss.
-                setCookie("currentBoss", nextBoss);
+                setCookie({ name: "currentBoss", newValue: nextBoss });
                 
                 // If the current mode is Overkill,
                 if (hpType == "overkill")
                 {
                     // Update the HP cookies based on the overkill amount and the multiplier.
-                    setCookie("currentHp", (overkill * hpMult < 100 ? 100 : overkill * hpMult));
-                    setCookie("maxHp", (overkill * hpMult < 100 ? 100 : overkill * hpMult));
+                    setCookie({ name: "currentHp", newValue: (overkill * hpMult < 100 ? 100 : overkill * hpMult).toString() });
+                    setCookie({ name: "maxHp", newValue: (overkill * hpMult < 100 ? 100 : overkill * hpMult).toString(); });
                 }
                 // Else, if the current mode is Progressive,
                 else if (hpType == "progress")
                 {
                     // Update the HP cookies based on the increment setting.
-                    setCookie("currentHp", (hpAmnt + hpIncr).toString());
-                    setCookie("maxHp", (hpAmnt + hpIncr).toString());
+                    setCookie({ name: "currentHp", newValue: (hpAmnt + hpIncr).toString() });
+                    setCookie({ name: "maxHp", newValue: (hpAmnt + hpIncr).toString() });
                 }
                 // Else, the current mode is Constant.
                 else
                 {
                     // Update the HP cookies based on the default amount.
-                    setCookie("currentHp", hpAmnt.toString());
-                    setCookie("maxHp", hpAmnt.toString());
+                    setCookie({ name: "currentHp", newValue: hpAmnt.toString() });
+                    setCookie({ name: "maxHp", newValue: hpAmnt.toString() });
                 }
             }
             // Else, the boss will have HP left over after calculation.
             else
             {
                 // Update the current HP of the boss.
-                setCookie("currentHp", (hp - loss).toString());
+                setCookie({ name: "currentHp", newValue: (hp - loss).toString() });
             }
             
             // Reset and start the initial delay.

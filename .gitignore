@@ -219,6 +219,12 @@ node_modules
 #Mr Developer
 .mr.developer.cfg
 
+#User defined
 *.env
 Notes/*
 Checklist.txt
+
+#SSL files
+*.csr
+*.crt
+*.key

@@ -61,6 +61,7 @@ var settingsSchema = {
 var userSchema = mongoose.Schema({
     
 	userid: String,
+	lastAccess: Number,
     partner: Boolean,
 	settings: settingsSchema
 });

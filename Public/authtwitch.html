@@ -7,7 +7,7 @@
             
             if (document.location.hash != "")
             {
-                setCookie({ name: "auth", newValue: document.location.hash.split("=")[1].split("&")[0] });
+                setCookie({ name: "auth", newValue: document.location.hash.split("=")[1].split("&")[0], secure: true });
                 setCookie({ name: "authchange", newValue: "true" });
                 window.close();
             }

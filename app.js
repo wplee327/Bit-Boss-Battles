@@ -27,9 +27,21 @@ server.listen(Number(process.env.PORT || "5000"), function() {
 
 app.use(function(req, res, next) {
 	
-	if (req.hostname == "bitbossbattles.herokuapp.com")
+	// Skip checks if we're running local.
+	if (req.hostname == "localhost" || req.hostname == "local.bitbossbattles.io")
 	{
-		res.redirect(301, "http://www.bitbossbattles.io" + req.originalUrl);
+		next();
+		return;
+	}
+	
+	// Get the protocol based on whether or not we're running on Heroku.
+	
+	var protocol = (process.env.ISHEROKU == "1" ? req.headers['x-forwarded-proto'] : req.protocol);
+	
+	// Redirect to secure official domain if we're not secure or not on the official domain.
+	if (req.hostname == "bitbossbattles.herokuapp.com" || protocol != "https")
+	{
+		res.redirect(301, "https://www.bitbossbattles.io" + req.originalUrl);
 	}
 	else
 	{

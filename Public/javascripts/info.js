@@ -2,4 +2,4 @@
 var clientId = "e0q2qpkzm4t8ausv47yr0q9mnmn61v";
 
 // The redirect URI
-var redirectUri = "http://www.bitbossbattles.io/auth.html";
+var redirectUri = "https://www.bitbossbattles.io/authtwitch.html";

@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>Bit Boss Battles | Auth Twitch</title>
+        <script src="./javascripts/cookies.js"></script>
+        <script type="text/javascript">
+            parseCookies();
+            
+            if (document.location.hash != "")
+            {
+                setCookie({ name: "auth", newValue: document.location.hash.split("=")[1].split("&")[0] });
+                setCookie({ name: "authchange", newValue: "true" });
+                window.close();
+            }
+        </script>
+    </head>
+	<body>
+		<div id="body" style="width: 100%; height: 100%; display: table; text-align: center;">
+			<div style="vertical-align: middle; display: table-cell;">
+				<img src="./images/loading.gif">
+				<br>
+				<h1>Authorizing...</h1>
+			</div>
+		</div>
+	</body>
+</html>

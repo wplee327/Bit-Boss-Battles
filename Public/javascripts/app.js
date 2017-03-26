@@ -430,7 +430,7 @@ $(document).ready(function () {
                 {
                     // Update the HP cookies based on the overkill amount and the multiplier.
                     setCookie({ name: "currentHp", newValue: (overkill * hpMult < 100 ? 100 : overkill * hpMult).toString() });
-                    setCookie({ name: "maxHp", newValue: (overkill * hpMult < 100 ? 100 : overkill * hpMult).toString(); });
+                    setCookie({ name: "maxHp", newValue: (overkill * hpMult < 100 ? 100 : overkill * hpMult).toString() });
                 }
                 // Else, if the current mode is Progressive,
                 else if (hpType == "progress")

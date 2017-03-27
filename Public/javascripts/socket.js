@@ -55,7 +55,7 @@ function Connect(url, success) {
         
         setTimeout(function() {
             
-            Connect(urlTemp, successTemp);
+            Connect(url, success);
         }, currentWait);
         currentWait *= 2;
     };

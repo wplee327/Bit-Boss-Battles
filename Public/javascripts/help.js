@@ -30,9 +30,9 @@ $(document).ready(function() {
 	
 	function UpdateLink() {
 		
-		if (boss == "") { $("#link").html('<span style="color: red;">Boss not set. Enter a lowercase username to set the boss.</span>'); }
+		if (boss == "") { $("#link").html('<span style="color: red;">Boss not set. Enter an exact username to set the boss.</span>'); }
 		else if (max == 0 || cur == 0) { $("#link").html('<span style="color: red;">Can\'t have zero health! Set a non-zero health.</span>'); }
 		else if (max < cur) { $("#link").html('<span style="color: red;">Can\'t have less max health than current health.</span>'); }
-		else { $("#link").html("http://www.bitbossbattles.io/setboss.html?boss=" + boss + "&max=" + max.toString() + "&cur=" + cur.toString()); }
+		else { $("#link").html("http://www.bitbossbattles.io/setboss.html?boss=" + boss.toLowerCase() + "&max=" + max.toString() + "&cur=" + cur.toString()); }
 	}
 });

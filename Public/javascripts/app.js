@@ -113,156 +113,165 @@ $(document).ready(function () {
     // Heal
     var heal = "http://i.imgur.com/fOvRfRk.gif";
     
-    parseCookies();
-    
-    // If the widget is not running from URL parameters, the widget was likely launched from the Launcher Page.
-    if (GetUrlParameter("token") == null && GetUrlParameter("userid") == null)
-    {
-        // Get the OAuth token.
-        oauth = getCookie("auth", "");
-		
-		// Get the Streamlabs token.
-		slRefresh = getCookie("refrsl", "");
-        
-		// Get the user ID.
-        userId = getCookie("userid", "");
-        
-        // If the auth token wasn't found, error out.
-        if (oauth == "") { $("body").html("<h1 style='color: red;'>ERROR. NO AUTH TOKEN.</h1>"); return; }
-        
-        // Get the sound setting.
-        sound = (getCookie("sound", "") == "true");
-        
-        // Determine the background mode.
-        if (getCookie("trans", "") == "true") { $(".allcontainer").css("background-color", "rgba(0,0,0,0)"); }
-        if (getCookie("chroma", "") == "true") { $(".allcontainer").css("background-color", "#00f"); }
-        
-        // Get HP settings.
-        hpType = getCookie("hptype", "overkill");
-        hpMult = parseInt(getCookie("hpmult", "1"));
-        hpAmnt = (hpType != "constant" ? parseInt(getCookie("hpinit", "") || hpAmnt) : parseInt(getCookie("hpamnt", "")) || hpAmnt);
-        hpIncr = parseInt(getCookie("hpinit", "100"));
-        
-        // Get Boss Heal setting.
-        bossHeal = (getCookie("bossheal", "") == "true");
-        
-        // Get hidden avatar setting.
-        hideAvtr = (getCookie("hideavtr", "") == "true");
-        
-        // Apply color settings.
-        if (getCookie("trans", "") != "true" && getCookie("chroma", "") != "true") { $("#mainbg").css("background-color", getCookie("colorbg", "#222222")); }
-        $("#background").css("background-color", getCookie("colorhb", "red"));
-        $("#hitdelay").css("background-color", getCookie("colorhm", "orange"));
-        $("#health").css("background-color", getCookie("colorhf", "green"));
-        $("#boss").css("color", getCookie("colortx", "white"));
-        $("#hp").css("color", getCookie("colortx", "white"));
-        $("#attackercontainer").css("color", getCookie("colortx", "white"));
-        
-        // If Persistence Mode is off,
-        if (getCookie("persistent", "false") != "true")
-        {
-            // Clear all of the cookies.
-            setCookie({ name: "currentBoss", newValue: "" });
-            setCookie({ name: "maxHp", newValue: "0" });
-            setCookie({ name: "currentHp", newValue: "0" });
-        }
-            
-        FinishSetup();
-    }
-    // Else, the widget is running from the URL given on the Launcher Page.
-    else
-    {
-        if (GetUrlParameter("rev") == null) { $("body").html("<h1 style='color: red;'>CRITICAL UPDATE!<br>RE-COPY LINK.</h1>"); return; }
-		
-		var protocol = window.location.href.split(":")[0];
-		
-		var host = window.location.href.split("//")[1].split("/")[0];
-		
-		if (protocol != "https" && host.indexOf("bitbossbattles.io") != -1) { $("body").html("<h1 style='color: red;'>NOT HTTPS! RE-COPY LINK.</h1>"); return; }
-        
-        $.get("./rev", function(response) {
-            
-            if (response.revision > parseInt(GetUrlParameter("rev")) || 0)
-            {
-                $("body").html("<h1 style='color: red;'>UPDATE! RE-COPY LINK.</h1>");
-                return;
-            }
-            
-            oauth = GetUrlParameter("token");
-            userId = GetUrlParameter("userid");
-			
-			if (GetUrlParameter("sl") != "")
+	try
+	{
+		parseCookies();
+
+		// If the widget is not running from URL parameters, the widget was likely launched from the Launcher Page.
+		if (GetUrlParameter("token") == null && GetUrlParameter("userid") == null)
+		{
+			// Get the OAuth token.
+			oauth = getCookie("auth", "");
+
+			// Get the Streamlabs token.
+			slRefresh = getCookie("refrsl", "");
+
+			// Get the user ID.
+			userId = getCookie("userid", "");
+
+			// If the auth token wasn't found, error out.
+			if (oauth == "") { $("body").html("<h1 style='color: red;'>ERROR. NO AUTH TOKEN.</h1>"); return; }
+
+			// Get the sound setting.
+			sound = (getCookie("sound", "") == "true");
+
+			// Determine the background mode.
+			if (getCookie("trans", "") == "true") { $(".allcontainer").css("background-color", "rgba(0,0,0,0)"); }
+			if (getCookie("chroma", "") == "true") { $(".allcontainer").css("background-color", "#00f"); }
+
+			// Get HP settings.
+			hpType = getCookie("hptype", "overkill");
+			hpMult = parseInt(getCookie("hpmult", "1"));
+			hpAmnt = (hpType != "constant" ? parseInt(getCookie("hpinit", "") || hpAmnt) : parseInt(getCookie("hpamnt", "")) || hpAmnt);
+			hpIncr = parseInt(getCookie("hpinit", "100"));
+
+			// Get Boss Heal setting.
+			bossHeal = (getCookie("bossheal", "") == "true");
+
+			// Get hidden avatar setting.
+			hideAvtr = (getCookie("hideavtr", "") == "true");
+
+			// Apply color settings.
+			if (getCookie("trans", "") != "true" && getCookie("chroma", "") != "true") { $("#mainbg").css("background-color", getCookie("colorbg", "#222222")); }
+			$("#background").css("background-color", getCookie("colorhb", "red"));
+			$("#hitdelay").css("background-color", getCookie("colorhm", "orange"));
+			$("#health").css("background-color", getCookie("colorhf", "green"));
+			$("#boss").css("color", getCookie("colortx", "white"));
+			$("#hp").css("color", getCookie("colortx", "white"));
+			$("#attackercontainer").css("color", getCookie("colortx", "white"));
+
+			// If Persistence Mode is off,
+			if (getCookie("persistent", "false") != "true")
 			{
-				slRefresh = getCookie("refrsl", "");
-			}
-			
-			if (slRefresh == "")
-			{
-				slRefresh = GetUrlParameter("sl");
+				// Clear all of the cookies.
+				setCookie({ name: "currentBoss", newValue: "" });
+				setCookie({ name: "maxHp", newValue: "0" });
+				setCookie({ name: "currentHp", newValue: "0" });
 			}
 
-            // If the auth token wasn't found, error out.
-            if (oauth == null || oauth == "") { $("body").html("<h1 style='color: red;'>ERR. NO AUTH TOKEN.<br>RE-COPY LINK.</h1>"); return; }
+			FinishSetup();
+		}
+		// Else, the widget is running from the URL given on the Launcher Page.
+		else
+		{
+			if (GetUrlParameter("rev") == null) { $("body").html("<h1 style='color: red;'>CRITICAL UPDATE!<br>RE-COPY LINK.</h1>"); return; }
 
-            // If the user ID wasn't found, error out.
-            if (userId == null || userId == "") { $("body").html("<h1 style='color: red;'>ERR. NO USER ID.<br>RE-COPY LINK.</h1>"); return; }
+			var protocol = window.location.href.split(":")[0];
 
-            // Obtain settings from the server.
-            $.get("./settings/" + userId, function(response) {
+			var host = window.location.href.split("//")[1].split("/")[0];
 
-                if (response.error)
-                {
-                    // Clear all of the cookies.
-                    setCookie({ name: "currentBoss", newValue: "" });
-                    setCookie({ name: "maxHp", newValue: "0" });
-                    setCookie({ name: "currentHp", newValue: "0" });
+			if (protocol != "https" && host.indexOf("bitbossbattles.io") != -1) { $("body").html("<h1 style='color: red;'>NOT HTTPS! RE-COPY LINK.</h1>"); return; }
 
-                    FinishSetup();
-                }
-                else
-                {
-                    // Get the sound setting.
-                    sound = response.sound;
+			$.get("./rev", function(response) {
 
-                    // Determine the background mode.
-                    if (response.trans) { $(".allcontainer").css("background-color", "rgba(0,0,0,0)"); }
-                    if (response.chroma) { $(".allcontainer").css("background-color", "#00f"); }
+				if (response.revision > parseInt(GetUrlParameter("rev")) || 0)
+				{
+					$("body").html("<h1 style='color: red;'>UPDATE! RE-COPY LINK.</h1>");
+					return;
+				}
 
-                    // Get HP settings.
-                    hpType = response.hpMode;
-                    hpMult = response.hpMult;
-                    hpAmnt = (hpType != "constant" ? response.hpInit : response.hpAmnt);
-                    hpIncr = response.hpIncr;
+				oauth = GetUrlParameter("token");
+				userId = GetUrlParameter("userid");
 
-                    // Get Boss Heal setting.
-                    bossHeal = response.bossHealing;
+				if (GetUrlParameter("sl") != "")
+				{
+					slRefresh = getCookie("refrsl", "");
+				}
 
-                    // Get hidden avatar setting.
-                    hideAvtr = response.avtrHidden;
-                    
-                    // Apply color settings.
-                    if (!response.trans && !response.chroma) { $("#mainbg").css("background-color", response.colorBg); }
-                    $("#background").css("background-color", response.colorHb);
-                    $("#hitdelay").css("background-color", response.colorHm);
-                    $("#health").css("background-color", response.colorHf);
-                    $("#boss").css("color", response.colorTx);
-                    $("#hp").css("color", response.colorTx);
-                    $("#attackercontainer").css("color", response.colorTx);
+				if (slRefresh == "")
+				{
+					slRefresh = GetUrlParameter("sl");
+				}
 
-                    // If Persistence Mode is off,
-                    if (!response.persistence)
-                    {
-                        // Clear all of the cookies.
-                        setCookie({ name: "currentBoss", newValue: "" });
-                        setCookie({ name: "maxHp", newValue: "0" });
-                        setCookie({ name: "currentHp", newValue: "0" });
-                    }
+				// If the auth token wasn't found, error out.
+				if (oauth == null || oauth == "") { $("body").html("<h1 style='color: red;'>ERR. NO AUTH TOKEN.<br>RE-COPY LINK.</h1>"); return; }
 
-                    FinishSetup();
-                }
-            });
-        })
-    }
+				// If the user ID wasn't found, error out.
+				if (userId == null || userId == "") { $("body").html("<h1 style='color: red;'>ERR. NO USER ID.<br>RE-COPY LINK.</h1>"); return; }
+
+				// Obtain settings from the server.
+				$.get("./settings/" + userId, function(response) {
+
+					if (response.error)
+					{
+						// Clear all of the cookies.
+						setCookie({ name: "currentBoss", newValue: "" });
+						setCookie({ name: "maxHp", newValue: "0" });
+						setCookie({ name: "currentHp", newValue: "0" });
+
+						FinishSetup();
+					}
+					else
+					{
+						// Get the sound setting.
+						sound = response.sound;
+
+						// Determine the background mode.
+						if (response.trans) { $(".allcontainer").css("background-color", "rgba(0,0,0,0)"); }
+						if (response.chroma) { $(".allcontainer").css("background-color", "#00f"); }
+
+						// Get HP settings.
+						hpType = response.hpMode;
+						hpMult = response.hpMult;
+						hpAmnt = (hpType != "constant" ? response.hpInit : response.hpAmnt);
+						hpIncr = response.hpIncr;
+
+						// Get Boss Heal setting.
+						bossHeal = response.bossHealing;
+
+						// Get hidden avatar setting.
+						hideAvtr = response.avtrHidden;
+
+						// Apply color settings.
+						if (!response.trans && !response.chroma) { $("#mainbg").css("background-color", response.colorBg); }
+						$("#background").css("background-color", response.colorHb);
+						$("#hitdelay").css("background-color", response.colorHm);
+						$("#health").css("background-color", response.colorHf);
+						$("#boss").css("color", response.colorTx);
+						$("#hp").css("color", response.colorTx);
+						$("#attackercontainer").css("color", response.colorTx);
+
+						// If Persistence Mode is off,
+						if (!response.persistence)
+						{
+							// Clear all of the cookies.
+							setCookie({ name: "currentBoss", newValue: "" });
+							setCookie({ name: "maxHp", newValue: "0" });
+							setCookie({ name: "currentHp", newValue: "0" });
+						}
+
+						FinishSetup();
+					}
+				});
+			})
+		}
+	}
+	catch (e)
+	{
+		var err = e.name+": "+e.message;
+		
+		$("body").html("<div>Error! Copy this entire page, create a Pastebin, and tweet it @Nifty255.<br>"+err+"<br><p style='padding-left: 10px;'>"+e.stack.substring(err.length+1).replace("<", "&lt;").replace(">", "&gt;").replace(/\n/g, "<br>")+"</p></div>");
+	}
     
     function FinishSetup() {
         

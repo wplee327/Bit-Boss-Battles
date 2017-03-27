@@ -30,6 +30,9 @@ Bit Boss Battles requires authorization in order to listen for bits notification
 
 CHANGELOG:
 
+v1.2.0.2:
+- The widget should now display all unexpected errors.
+
 v1.2.0.1:
 - Changed Hard Reset link to use https.
 

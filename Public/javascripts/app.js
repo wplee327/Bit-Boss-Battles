@@ -53,6 +53,14 @@ $(document).ready(function () {
     var delayed = 0;
     var loss = 0;
     var overkill = null;
+	
+	// Streamlabs variables
+	var slToken = "";
+	var slRefresh = "";
+	var lastId = "";
+	var startTime = 0;
+	var slStarted = false;
+	var tipQueue = [];
 
     // Element containers
     var health = $("#health");
@@ -112,7 +120,11 @@ $(document).ready(function () {
     {
         // Get the OAuth token.
         oauth = getCookie("auth", "");
+		
+		// Get the Streamlabs token.
+		slRefresh = getCookie("refrsl", "");
         
+		// Get the user ID.
         userId = getCookie("userid", "");
         
         // If the auth token wasn't found, error out.
@@ -164,7 +176,9 @@ $(document).ready(function () {
 		
 		var protocol = window.location.href.split(":")[0];
 		
-		if (protocol != "https") { $("body").html("<h1 style='color: red;'>NOT HTTPS! RE-COPY LINK.</h1>"); return; }
+		var host = window.location.href.split("//")[1].split("/")[0];
+		
+		if (protocol != "https" && host.indexOf("bitbossbattles.io") != -1) { $("body").html("<h1 style='color: red;'>NOT HTTPS! RE-COPY LINK.</h1>"); return; }
         
         $.get("./rev", function(response) {
             
@@ -176,6 +190,16 @@ $(document).ready(function () {
             
             oauth = GetUrlParameter("token");
             userId = GetUrlParameter("userid");
+			
+			if (GetUrlParameter("sl") != "")
+			{
+				slRefresh = getCookie("refrsl", "");
+			}
+			
+			if (slRefresh == "")
+			{
+				slRefresh = GetUrlParameter("sl");
+			}
 
             // If the auth token wasn't found, error out.
             if (oauth == null || oauth == "") { $("body").html("<h1 style='color: red;'>ERR. NO AUTH TOKEN.<br>RE-COPY LINK.</h1>"); return; }
@@ -273,7 +297,7 @@ $(document).ready(function () {
             {
                 xhr.setRequestHeader('Accept', "application/vnd.twitchtv.v5+json");
                 xhr.setRequestHeader('Authorization', "OAuth " + oauth);
-                xhr.setRequestHeader('Client-ID', clientId);
+                xhr.setRequestHeader('Client-ID', twitchClientId);
             },
             success: function(data) {
 
@@ -296,7 +320,17 @@ $(document).ready(function () {
                 $("body").html("<h1 style='color: red;'>ERROR. FAILED STREAMER GET.</h1>");
                 console.log("https://api.twitch.tv/kraken/users/" + userId);
             }
-          });
+		});
+		
+		// If a refresh token has been provided,
+		if (slRefresh != "" && slRefresh != null)
+		{
+			// Get a new access token.
+			GetNewAccessToken();
+			
+			// Get a new access token every subsequent 50 minutes.
+			setInterval(GetNewAccessToken, 1000*60*50);
+		}
     }
     
     // PubSub Message Callback. Interprets bits event messages.
@@ -339,8 +373,44 @@ $(document).ready(function () {
         }
     }
     
+    // PubSub Message Callback. Interprets bits event messages.
+    function InterpretDonation(donation) {
+		
+		console.log(donation)
+        
+        // If the nextBoss variable is empty, then no transition is taking place.
+        if (nextBoss == "")
+        {
+            // Get information about the user who cheered.
+            GetUserInfo(donation.name, function(info) {
+                
+                // Reset the attacker display.
+                $("#attackerdisplay").css({
+                    
+                    "opacity": "0"
+                });
+                
+                // If the attacker is the current Bit Boss,
+                if (info.displayName == $("#name").html())
+                {
+                    // If the Boss Heal setting is on, then heal. If not, do nothing.
+                    if (bossHeal)
+                    {
+                        Heal(Math.floor(donation.amount * 100), donation.name, info.displayName, true);
+                    }
+                }
+                // Else, the attacker is not the current Bit Boss.
+                else
+                {
+                    // Strike the Bit Boss.
+                    Strike(Math.floor(donation.amount * 100), donation.name, info.displayName, true);
+                }
+            });
+        }
+    }
+    
     // Heals the Bit Boss by the given amount.
-    function Heal(amount, healer, display) {
+    function Heal(amount, healer, display, donation) {
         
         // If the nextBoss variable is empty, then no transition is taking place.
         if (nextBoss == "")
@@ -354,7 +424,7 @@ $(document).ready(function () {
             else { milestone = "10000"; }
             
             // Sets the attacker display.
-            $("#attackerdisplay").html("<img id='cheerimg' src='https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/light/animated/" + milestone + "/1.gif?a=" + Math.random() + "'>" + display + " heals!");
+            $("#attackerdisplay").html("<img id='cheerimg' src='" + (donation ? "./images/dollar.gif" : "https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/light/animated/" + milestone + "/1.gif?a=" + Math.random()) + "'>" + display + " heals!");
             $("#attackerdisplay").stop().animate({ "opacity": "1" }, 1000, "linear", function() { setTimeout(function() { $("#attackerdisplay").css("opacity", "0"); $("#attackerdisplay").html("&nbsp;"); }, 1000) });
             
             // Remove the current strike gif if it exists.
@@ -376,7 +446,7 @@ $(document).ready(function () {
     }
     
     // Strikes the Bit Boss, damaging them by the given amount.
-    function Strike(amount, attacker, display) {
+    function Strike(amount, attacker, display, donation) {
         
         // If the nextBoss variable is empty, then no transition is taking place.
         if (nextBoss == "")
@@ -390,7 +460,7 @@ $(document).ready(function () {
             else { milestone = "10000"; }
             
             // Sets the attacker display.
-            $("#attackerdisplay").html("<img id='cheerimg' src='https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/light/animated/" + milestone + "/1.gif?a=" + Math.random() + "'>" + display + " attacks!");
+            $("#attackerdisplay").html("<img id='cheerimg' src='" + (donation ? "./images/dollar.gif" : "https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/light/animated/" + milestone + "/1.gif?a=" + Math.random()) + "'>" + display + " attacks!");
             $("#attackerdisplay").stop().animate({ "opacity": "1" }, 1000, "linear", function() { setTimeout(function() { $("#attackerdisplay").css("opacity", "0"); $("#attackerdisplay").html("&nbsp;"); }, 1000) });
             
             // Get a random strike image based on the highest cheer milestone.
@@ -681,7 +751,7 @@ $(document).ready(function () {
         
         // Obtain the user information from Twitch.
         $.ajax({
-            url: "https://api.twitch.tv/kraken/users/" + username + "?client_id=" + clientId,
+            url: "https://api.twitch.tv/kraken/users/" + username + "?client_id=" + twitchClientId,
             type: "GET",
             beforeSend: function(xhr)
             {
@@ -700,6 +770,88 @@ $(document).ready(function () {
             }
         });
     }
+	
+	// Gets a new access token for Streamlabs.
+	function GetNewAccessToken() {
+		
+		// Post the request.
+		$.post("./slauth", { slToken: slRefresh, refresh: "true" }, function(res) {
+			
+			// If there was no error,
+			if (!res.error)
+			{
+				// Assign the new tokens.
+				slToken = res.token;
+				slRefresh = res.refresh;
+				
+				// Store the refresh token in cookies.
+				setCookie({ name: "refrsl", newValue: res.refresh });
+				
+				// If the donation fetch timer isn't yet started,
+				if (!slStarted)
+				{
+					// Set the flag to true.
+					slStarted = true;
+					
+					// Set the start time to now.
+					startTime = new Date().getTime();
+					
+					// Create the donations fetch interval for 15 seconds.
+					setInterval(GetLatestDonations, 15000);
+					
+					// Create the donations queue interval for 1 second.
+					setInterval(DequeueDonation, 1000);
+				}
+			}
+		});
+	}
+	
+	// Gets the last 10 donations after the current ID, if it is set.
+	function GetLatestDonations() {
+		
+		// Request the last 10 donations, supplying a last ID if it is set.
+		$.get("https://streamlabs.com/api/v1.0/donations?access_token="+slToken+"&verified=1&limit=10&currency=USD"+(lastId != "" ? "&after="+lastId : ""), function(res) {
+			
+			var lastIndex = res.data.length - 1;
+			
+			if (lastId == "")
+			{
+				for (let i = 0; i < res.data.length; i++)
+				{
+					var created = parseInt(res.data[i].created_at);
+					
+					if (created > startTime)
+					{
+						lastIndex = i - 1;
+					}
+				}
+			}
+			else
+			{
+				lastIndex = -1;
+			}
+			
+			if (res.data.length > 0) { lastId = res.data[0].donation_id; }
+			
+			for (let i = res.data.length - 1; i > lastIndex; i--)
+			{
+				tipQueue.push({ name: res.data[i].name.toLowerCase(), amount: parseFloat(res.data[i].amount) });
+			}
+		});
+	}
+	
+	// Dequeues a donation and feeds it into the bits system.
+	function DequeueDonation() {
+		
+		// If the queue isn't empty,
+		if (tipQueue.length > 0)
+		{
+			var donation = tipQueue[0];
+			tipQueue.splice(0, 1);
+
+			InterpretDonation(donation);
+		}
+	}
     
     // Gets a random integer between the min (inclusive) and max (inclusive).
     function GetRandomInt(min, max) {

@@ -382,7 +382,7 @@ $(document).ready(function () {
         if (username == "") { return; }
         if (!callback) { return; }
 
-        $.get("https://api.twitch.tv/kraken/users/" + username + "?client_id=" + clientId, function(response) {
+        $.get("https://api.twitch.tv/kraken/users/" + username + "?client_id=" + twitchClientId, function(response) {
             
             callback({ displayName: response.display_name, logo: response.logo });
         });

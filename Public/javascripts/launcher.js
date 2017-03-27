@@ -37,15 +37,16 @@ $(document).ready(function() {
             {
                 xhr.setRequestHeader('Accept', "application/vnd.twitchtv.v5+json");
                 xhr.setRequestHeader('Authorization', "OAuth " + getCookie("auth", ""));
-                xhr.setRequestHeader('Client-ID', clientId);
+                xhr.setRequestHeader('Client-ID', twitchClientId);
             },
             success: function(data) {
 
                 userId = data._id;
                 setCookie({ name: "userid", newValue: userId });
+				var slToken = getCookie("authsl", "");
 				
 				$("#launch").prop("disabled", false);
-        		$("#link").html("https://www.bitbossbattles.io/app.html?userid=" + userId + "&token=" + getCookie("auth", "") + "&rev=" + rev);
+        		$("#link").html("https://www.bitbossbattles.io/app.html?userid=" + userId + "&token=" + getCookie("auth", "") + "&sl=" + slToken + "&rev=" + rev);
 
                 var settings = {
                     overwrite: false,
@@ -72,13 +73,19 @@ $(document).ready(function() {
         });
     }
 
-    function LaunchAuth() {
+    function LaunchTwitchAuth() {
 
-        window.open("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=user_read", "", "width=400,height=512");
+        window.open("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=" + twitchClientId + "&redirect_uri=" + twitchRedirectUri + "&scope=user_read", "", "width=400,height=512");
     }
-    function LaunchForce() {
+	function LaunchStreamlabsAuth() {
 
-        window.open("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=user_read&force_verify=true", "", "width=400,height=512");
+        window.open("https://streamlabs.com/api/v1.0/authorize?response_type=code&client_id=" + slClientId + "&redirect_uri=" + slRedirectUri + "&scope=donations.read", "", "width=720,height=1031");
+    }
+    function ClearStreamlabsAuth() {
+		
+        deleteCookie("authsl");
+        deleteCookie("refrsl");
+		setCookie({ name: "authchange", newValue: "true" });
     }
     function LaunchApp() {
 
@@ -89,8 +96,9 @@ $(document).ready(function() {
         appWindow = window.open("./demo.html", "Demo", "width=350,height=325");
     }
     
-    $("#auth").click(LaunchAuth);
-    $("#force").click(LaunchForce);
+    $("#authtwitch").click(LaunchTwitchAuth);
+    $("#authsl").click(LaunchStreamlabsAuth);
+    $("#clearsl").click(ClearStreamlabsAuth);
     $("#launch").click(LaunchApp);
     $("#demo").click(LaunchDemo);
 });

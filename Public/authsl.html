@@ -15,8 +15,12 @@
 					if (res.error) { $("#body").html("<h1 style='color: red'>Error authorizing Streamlabs: " + res.error + "</h1>"); return; }
 					
 					setCookie({ name: "authsl", newValue: res.token });
+					setCookie({ name: "refrsl", newValue: res.refresh });
 					setCookie({ name: "authchange", newValue: "true" });
-					window.close();
+					
+					$("#auth").text("Done!");
+					
+					setTimeout(function() { window.close(); }, 1000);
 				});
 
 				// Gets a parameter from the URL.
@@ -43,7 +47,7 @@
 			<div style="vertical-align: middle; display: table-cell;">
 				<img src="./images/loading.gif">
 				<br>
-				<h1>Authorizing...</h1>
+				<h1 id="auth">Authorizing...</h1>
 			</div>
 		</div>
 	</body>

@@ -1,8 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var dbModule = require('./database');
+var request = require('request');
 
 var User = dbModule.User;
+
+var streamlabsClient = process.env.SL_CLIENT || "";
+var streamlabsSecret = process.env.SL_SECRET || "";
+var streamlabsRedir = process.env.SL_REDIR || "";
 
 router.get('/index.html', function(req, res) {
 	
@@ -164,6 +169,33 @@ router.post('/analytics/*', function(req, res) {
 			if (err) { res.status(500).send("Database Error"); }
 			else { res.send("success"); }
 		});
+	});
+});
+
+router.post('/slauth', function(req, res) {
+	
+	var slToken = req.body.slToken;
+	
+	if (typeof(slToken) != "string" || slToken == "") { res.status(500).json({ error: "Bad token" }); return; }
+	
+	var form = {
+		
+		grant_type: (req.body.refresh == "true" ? "refresh_token" : "authorization_code"),
+		client_id: streamlabsClient,
+		client_secret: streamlabsSecret,
+		redirect_uri: streamlabsRedir
+	};
+	
+	if (req.body.refresh == "true") { form.refresh_token = slToken; }
+	else { form.code = slToken; }
+	
+	request.post({ url:'https://streamlabs.com/api/v1.0/token', form: form }, function(err, response, body) {
+		
+		var resp = JSON.parse(body);
+		
+		if (resp.error) { console.log("SL AUTH ERR: " + resp.error); res.status(500).json({ error: "SL auth error" }); return; }
+		
+		res.json({ token: resp.access_token, refresh: resp.refresh_token });
 	});
 });
 

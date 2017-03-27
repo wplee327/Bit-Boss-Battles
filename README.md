@@ -1,5 +1,5 @@
 Bit Boss Battles
-v1.1.4.9: Release
+v1.2.0: Release
 
 This software is provided "as-is" with no warranties.
 
@@ -29,6 +29,12 @@ Bit Boss Battles (BBB) is a viewer interactive bits widget for the Twitch platfo
 Bit Boss Battles requires authorization in order to listen for bits notifications from the Twitch API. BBB requires the "User Read" permission in order to obtain the streamer's user ID (public information) from the token it receives from authorization. Once authorized, BBB stores the token only as a cookie on your browser. BBB's servers DO NOT store ANY personal information about you or your Twitch account.
 
 CHANGELOG:
+
+v1.2.0:
+- Added donations/tips support through Streamlabs.
+- Donations are at a $0.01 to 1 bit scale.
+- Donations are indicated with a $ image instead of a bit image.
+- The donation feature can be disabled by clearing authorization.
 
 v1.1.4.9:
 - Fixed issue with "Bit Boss Reset" help not lower-casing usernames.

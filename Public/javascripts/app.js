@@ -161,6 +161,10 @@ $(document).ready(function () {
     else
     {
         if (GetUrlParameter("rev") == null) { $("body").html("<h1 style='color: red;'>CRITICAL UPDATE!<br>RE-COPY LINK.</h1>"); return; }
+		
+		var protocol = window.location.href.split(":")[0];
+		
+		if (protocol != "https") { $("body").html("<h1 style='color: red;'>NOT HTTPS! RE-COPY LINK.</h1>"); return; }
         
         $.get("./rev", function(response) {
             

@@ -114,12 +114,12 @@ function deleteCookie(name, path) {
 function clearAllCookies() {
 	
 	// Get a temporary array of the cookies we can safely iterate through.
-	var allCookies = cookies;
+	var count = cookies.length;
 	
 	// Iterate through the temporary array.
-	for (var i = 0; i < allCookies.length; i++)
+	for (var i = 0; i < count; i++)
 	{
 		// Delete the current iteration.
-		deleteCookie(allCookies[i].name);
+		deleteCookie(cookies[0].name);
 	}
 }

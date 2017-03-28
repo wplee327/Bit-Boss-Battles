@@ -770,10 +770,18 @@ $(document).ready(function () {
             },
             error: function(data) {
 
-                // Log the error and response.
-                console.log("Error: " + status);
-                console.log(data);
-                $("body").html("<h1 style='color: red;'>ERROR. FAILED USER GET.</h1>");
+				// If the error is due to an unknown username,
+				if (data.responseJSON.status == 422)
+				{
+					callback({ displayName: username, logo: null });
+				}
+				// Else, error out.
+				else
+				{
+					// Log the error and response.
+					console.log("Error: " + data.responseJSON.error + ". " + data.responseJSON.message);
+					$("body").html("<h1 style='color: red;'>ERROR. FAILED USER GET.</h1>");
+				}
             }
         });
     }

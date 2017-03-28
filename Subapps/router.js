@@ -176,7 +176,7 @@ router.post('/slauth', function(req, res) {
 	
 	var slToken = req.body.slToken;
 	
-	if (typeof(slToken) != "string" || slToken == "") { res.status(500).json({ error: "Bad token" }); return; }
+	if (typeof(slToken) != "string" || slToken == "") { res.json({ error: "Bad token" }); return; }
 	
 	var form = {
 		
@@ -193,7 +193,7 @@ router.post('/slauth', function(req, res) {
 		
 		var resp = JSON.parse(body);
 		
-		if (resp.error) { console.log("SL AUTH ERR: " + resp.error); res.status(500).json({ error: "SL auth error" }); return; }
+		if (resp.error) { console.log("SL AUTH ERR: " + resp.error); res.json({ error: "SL auth error" }); return; }
 		
 		res.json({ token: resp.access_token, refresh: resp.refresh_token });
 	});

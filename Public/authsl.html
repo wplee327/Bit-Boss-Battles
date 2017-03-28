@@ -9,13 +9,15 @@
 				var slToken = GetUrlParameter("code");
 				
 				parseCookies();
+				
+				var host = document.location.href.split("//")[1].split("/")[0];
+				var isDev = (host == "localhost:5000" || host == "local.bitbossbattles.io:5000");
 
 				$.post("./slauth", { slToken: slToken }, function(res) {
 					
 					if (res.error) { $("#body").html("<h1 style='color: red'>Error authorizing Streamlabs: " + res.error + "</h1>"); return; }
 					
-					setCookie({ name: "authsl", newValue: res.token });
-					setCookie({ name: "refrsl", newValue: res.refresh });
+					setCookie({ name: "refrsl", newValue: res.refresh, secure: !isDev });
 					setCookie({ name: "authchange", newValue: "true" });
 					
 					$("#auth").text("Done!");

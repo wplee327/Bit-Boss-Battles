@@ -116,6 +116,10 @@ $(document).ready(function () {
 	try
 	{
 		parseCookies();
+		
+		var protocol = window.location.href.split(":")[0];
+		var host = document.location.href.split("//")[1].split("/")[0];
+		var isDev = (host == "localhost:5000" || host == "local.bitbossbattles.io:5000");
 
 		// If the widget is not running from URL parameters, the widget was likely launched from the Launcher Page.
 		if (GetUrlParameter("token") == null && GetUrlParameter("userid") == null)
@@ -176,11 +180,7 @@ $(document).ready(function () {
 		{
 			if (GetUrlParameter("rev") == null) { $("body").html("<h1 style='color: red;'>CRITICAL UPDATE!<br>RE-COPY LINK.</h1>"); return; }
 
-			var protocol = window.location.href.split(":")[0];
-
-			var host = window.location.href.split("//")[1].split("/")[0];
-
-			if (protocol != "https" && host.indexOf("bitbossbattles.io") != -1) { $("body").html("<h1 style='color: red;'>NOT HTTPS! RE-COPY LINK.</h1>"); return; }
+			if (protocol != "https" && !isDev) { $("body").html("<h1 style='color: red;'>NOT HTTPS! RE-COPY LINK.</h1>"); return; }
 
 			$.get("./rev", function(response) {
 
@@ -384,8 +384,6 @@ $(document).ready(function () {
     
     // PubSub Message Callback. Interprets bits event messages.
     function InterpretDonation(donation) {
-		
-		console.log(donation)
         
         // If the nextBoss variable is empty, then no transition is taking place.
         if (nextBoss == "")

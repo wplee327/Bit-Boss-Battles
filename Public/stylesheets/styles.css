@@ -4,6 +4,7 @@ div#boss { position: relative; color: white; margin: 0; margin-bottom: 17px; fon
 span#scroll {  position: absolute; margin: 0; max-width: 192px; overflow-x: hidden; }
 span#loss {  position: absolute; right: 0px; margin: 0; }
 span#test { position: fixed; top: 200px; left: 500px; visibility: hidden; margin: 0; font-family: 'Press Start 2P', cursive; }
+span.debug { color: blue; }
 span#attackerdisplay { margin: 0; }
 h5#hp { color: white; position: absolute; margin: 0; padding-left: 10px; font-family: 'Press Start 2P', cursive; top: 50%; -webkit-transform: translateY(-50%); -ms-transform: translateY(-50%); transform: translateY(-50%); z-index: 4; }
 span#loss { visibility: hidden; }

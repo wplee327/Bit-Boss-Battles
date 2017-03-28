@@ -28,7 +28,11 @@ $(document).ready(function() {
     
     function InitialSettingsSave() {
 		
-		setCookie({ name: "auth", newValue: getCookie("auth", ""), secure: true });
+		var host = document.location.href.split("//")[1].split("/")[0];
+		var isDev = (host == "localhost:5000" || host == "local.bitbossbattles.io:5000");
+		
+		setCookie({ name: "auth", newValue: getCookie("auth", ""), secure: !isDev });
+		setCookie({ name: "refrsl", newValue: getCookie("refrsl", ""), secure: !isDev });
 
         $.ajax({
             url: "https://api.twitch.tv/kraken/user",
@@ -43,7 +47,7 @@ $(document).ready(function() {
 
                 userId = data._id;
                 setCookie({ name: "userid", newValue: userId });
-				var slToken = getCookie("authsl", "");
+				var slToken = getCookie("refrsl", "");
 				
 				$("#launch").prop("disabled", false);
         		$("#link").html("https://www.bitbossbattles.io/app.html?userid=" + userId + "&token=" + getCookie("auth", "") + "&sl=" + slToken + "&rev=" + rev);

@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    
-    // Demo Mode
+	
+	// Demo Mode
     var demoMode = false;
     
     // Channel ID
@@ -827,11 +827,13 @@ $(document).ready(function () {
 		// Request the last 10 donations, supplying a last ID if it is set.
 		$.get("https://streamlabs.com/api/v1.0/donations?access_token="+slToken+"&verified=1&limit=10&currency=USD"+(lastId != "" ? "&after="+lastId : ""), function(res) {
 			
+			var i = 0;
+			
 			var lastIndex = res.data.length - 1;
 			
 			if (lastId == "")
 			{
-				for (let i = 0; i < res.data.length; i++)
+				for (i = 0; i < res.data.length; i++)
 				{
 					var created = parseInt(res.data[i].created_at);
 					
@@ -848,7 +850,7 @@ $(document).ready(function () {
 			
 			if (res.data.length > 0) { lastId = res.data[0].donation_id; }
 			
-			for (let i = res.data.length - 1; i > lastIndex; i--)
+			for (i = res.data.length - 1; i > lastIndex; i--)
 			{
 				tipQueue.push({ name: res.data[i].name.toLowerCase(), amount: parseFloat(res.data[i].amount) });
 			}

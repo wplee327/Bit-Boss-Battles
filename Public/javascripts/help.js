@@ -9,20 +9,20 @@ $(document).ready(function() {
 		$(".answer.act").removeClass("act");
 		$(this).parent().children(".answer").addClass("act");
 	})
-    
-    $("#boss-name").change(function() {
+	
+	$("#boss-name").change(function() {
 		
 		boss = $(this).val();
 		UpdateLink();
 	});
-    
-    $("#hp-max").change(function() {
+	
+	$("#hp-max").change(function() {
 		
 		max = $(this).val();
 		UpdateLink();
 	});
-    
-    $("#hp-cur").change(function() {
+	
+	$("#hp-cur").change(function() {
 		
 		cur = $(this).val();
 		UpdateLink();

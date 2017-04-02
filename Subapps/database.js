@@ -39,8 +39,8 @@ db.on('disconnected', function (callback) {
 
 // Database Schemas
 var settingsSchema = {
-    
-    sound: Boolean,
+	
+	sound: Boolean,
 	trans: Boolean,
 	chroma: Boolean,
 	persistence: Boolean,
@@ -59,10 +59,10 @@ var settingsSchema = {
 }
 
 var userSchema = mongoose.Schema({
-    
+	
 	userid: String,
 	lastAccess: Number,
-    partner: Boolean,
+	partner: Boolean,
 	settings: settingsSchema
 });
 

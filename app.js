@@ -90,7 +90,7 @@ if (app.get('env') === 'development')
 app.use(function(err, req, res, next)
 {
 	res.status(err.status || 500);
-    res.send("An error has occured. Please contact the site administrator if you would like to help resolve this issue.<br><br>"+err.message);
+	res.send("An error has occured. Please contact the site administrator if you would like to help resolve this issue.<br><br>"+err.message);
 });
 
 module.exports = app;

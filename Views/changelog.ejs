@@ -1,0 +1,29 @@
+<html>
+	<head>
+		<title>Bit Boss Battles | Changelog</title>
+		<meta name="Description" content="Take charge, brave streamer, and lead your viewers into battle with their bits! This is the changelog page, where anyone can track recent updates to BBB.">
+		<meta name="Keywords" content="twitch, bit, boss, battles">
+		<link href="https://fonts.googleapis.com/css?family=Press+Start+2P|Roboto" rel="stylesheet">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link href="./stylesheets/common.css" rel="stylesheet">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<div class="main">
+			<div class="container" style="margin-top: 0; padding-top: 0;">
+				<div style="text-align: center;"><img src="./images/logo.png"><br><h1 style="font-family: 'Press Start 2P', cursive;">By Nifty255</h1></div>
+			</div>
+			<ul class="nav nav-tabs nav-justified" role="tablist">
+				<li><a href="./">Home</a></li>
+				<li><a href="./launcher">Launcher</a></li>
+				<li><a href="./settings">Settings</a></li>
+				<li><a href="./help">Help Page</a></li>
+				<li class="active"><a>Changelog</a></li>
+			</ul>
+			<div class="container">
+				<markdown><%- changelogText %></markdown>
+				<script src="./javascripts/tagdown.min.js"></script>
+			</div>
+		</div>
+	</body>
+</html>

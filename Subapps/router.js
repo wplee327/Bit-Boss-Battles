@@ -1,7 +1,11 @@
 var express = require('express');
 var router = express.Router();
+var file = require('fs');
 var dbModule = require('./database');
 var request = require('request');
+
+var changelog = file.readFileSync("README.md").toString();
+changelog = changelog.substring(changelog.indexOf("# CHANGELOG"));
 
 var User = dbModule.User;
 
@@ -32,6 +36,11 @@ router.get('/settings', function(req, res) {
 router.get('/help', function(req, res) {
 	
 	res.render('help');
+});
+
+router.get('/changelog', function(req, res) {
+	
+	res.render('changelog', { changelogText: changelog });
 });
 
 router.get('/rev', function(req, res) {

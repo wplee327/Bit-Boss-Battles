@@ -499,8 +499,6 @@ $(document).ready(function () {
 			// If the current boss's HP after the loss is zero or less,
 			if (hp - loss <= 0)
 			{
-				// Calculate the overkill amount for later.
-				overkill = loss - hp;
 				prevHp = 0;
 				
 				// Set the next boss for transition.
@@ -515,9 +513,22 @@ $(document).ready(function () {
 				// If the current mode is Overkill,
 				if (hpType == "overkill")
 				{
+					// Calculate the overkill amount.
+					overkill = Math.max((loss - hp) * hpMult, 100);
+					
 					// Update the HP cookies based on the overkill amount and the multiplier.
-					setCookie({ name: "currentHp", newValue: (overkill * hpMult < 100 ? 100 : overkill * hpMult).toString() });
-					setCookie({ name: "maxHp", newValue: (overkill * hpMult < 100 ? 100 : overkill * hpMult).toString() });
+					setCookie({ name: "currentHp", newValue: overkill.toString() });
+					setCookie({ name: "maxHp", newValue: overkill.toString() });
+				}
+				// If the current mode is Overkill Plus,
+				if (hpType == "strength")
+				{
+					// Calculate the overkill amount.
+					overkill = Math.max(amount, 100);
+					
+					// Update the HP cookies based on the overkill plus amount and the multiplier.
+					setCookie({ name: "currentHp", newValue: overkill.toString() });
+					setCookie({ name: "maxHp", newValue: overkill.toString() });
 				}
 				// Else, if the current mode is Progressive,
 				else if (hpType == "progress")
@@ -717,7 +728,7 @@ $(document).ready(function () {
 				if (hpType == "overkill" && overkill != null)
 				{
 					// Set the new HP amount based on the overkill with multiplier.
-					hpAmnt = (overkill * hpMult < 100 ? 100 : overkill * hpMult);
+					hpAmnt = overkill;
 				}
 				// Else, if the widget is in Progressive Mode,
 				else if (hpType == "progress")

@@ -228,6 +228,14 @@ $(document).ready(function() {
 			$("p.showing").removeClass("showing").addClass("hidden");
 			$("#expl-overkill").removeClass("hidden").addClass("showing");
 		}
+		else if ($(this).val() == "strength")
+		{
+			$(".subsettings.showing").removeClass("showing").addClass("hidden");
+			$("#settings-strength").removeClass("hidden").addClass("showing");
+			
+			$("p.showing").removeClass("showing").addClass("hidden");
+			$("#expl-strength").removeClass("hidden").addClass("showing");
+		}
 		else if ($(this).val() == "progress")
 		{
 			$(".subsettings.showing").removeClass("showing").addClass("hidden");

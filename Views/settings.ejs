@@ -71,6 +71,8 @@
 							</tr>
 						</table>
 					</div>
+					<div class="subsettings hidden" id="settings-strength">
+					</div>
 					<div class="subsettings hidden" id="settings-progress">
 						<table>
 							<tr style="border: 0;">
@@ -94,10 +96,12 @@
 				</div>
 				<div style="width: 50%;">
 					<div style="padding-bottom: 10px;"><input type="radio" name="hp" value="overkill" checked>Overkill Mode</div>
+					<div style="padding-bottom: 10px;"><input type="radio" name="hp" value="strength">Strength Mode</div>
 					<div style="padding-bottom: 10px;"><input type="radio" name="hp" value="progress">Progressive Mode</div>
 					<div style="padding-bottom: 10px;"><input type="radio" name="hp" value="constant">Constant Mode</div>
 				</div>
-				<p class="indent showing" id="expl-overkill">In Overkill Mode, the remaining bits after a final blow determines the HP value of the next boss. As an example, if Kappa defeats PogChamp (who has 100 HP) with 250 bits, then Kappa will have 150 health. If the multiplier is set to 2, then Kappa will start with 150 x 2 = 300 HP.</p>
+				<p class="indent showing" id="expl-overkill">In Overkill Mode, the remaining bits after a final blow determines the HP value of the next boss, with 100 as the minimum. As an example, if Kappa defeats PogChamp (who has 100 HP) with 250 bits, then Kappa will have 150 health. If the multiplier is set to 2, then Kappa will start with 150 x 2 = 300 HP.</p>
+				<p class="indent hidden" id="expl-strength">In Strength Mode, the bits amount used in the final blow becomes the HP of the new Bit Boss, with 100 as the minimum. As an example, if Kappa defeats PogChamp with a 1,000 bit attack, then Kappa's HP will be 1,000, no matter how much HP PogChamp had left.</p>
 				<p class="indent hidden" id="expl-progress">In Progressive Mode, the first Bit Boss starts with an initial amount of HP, and each successive boss afterward has an incrementally higher HP value.</p>
 				<p class="indent hidden" id="expl-constant">In Constant Mode, each Bit Boss will always have the same amount of starting HP.</p>
 				<p><span style="color: red;">NOTE:</span> Changing HP modes resets the current boss and their HP.</p>

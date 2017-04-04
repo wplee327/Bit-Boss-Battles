@@ -1,5 +1,5 @@
 ![Bit Boss Battles](https://www.bitbossbattles.io/images/logo.png)
-# v1.2.2.2: Release
+# v1.2.3: Release
 
 This software is provided "as-is" with no warranties.
 
@@ -33,6 +33,10 @@ Bit Boss Battles requires authorization in order to listen for bits notification
 ***
 
 ## 1.2:
+
+#### v1.2.3:
+- Added Strength Mode. Closes #4 feature request.
+- Strength Mode sets a new Boss's HP to the final blow's bits amount.
 
 #### v1.2.2.2:
 - Fixed donations under certain names breaking the widget.

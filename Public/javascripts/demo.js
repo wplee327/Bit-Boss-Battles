@@ -320,7 +320,7 @@ $(document).ready(function () {
 
 		preload = true;
 		
-		if (sound) { explosion.play(); }
+		if (sound) { explosions[0].play(); }
 		
 		avatarimg.after('<img id="explodeimg" src="http://i.imgur.com/m9Ajapt.gif?a='+Math.random()+'"/>');
 		avatarimg.animate({opacity: 0}, 1000, "linear", function() {

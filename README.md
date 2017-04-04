@@ -34,6 +34,9 @@ Bit Boss Battles requires authorization in order to listen for bits notification
 
 ## 1.2:
 
+#### v1.2.2.1:
+- Fixed explosion sound not playing in the Demo Widget.
+
 #### v1.2.2:
 - Added volume controls. Closes #11 feature request.
 - Volume is adjusted on the Settings page, visible when sound is enabled.

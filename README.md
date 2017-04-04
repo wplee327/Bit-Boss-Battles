@@ -1,5 +1,5 @@
 ![Bit Boss Battles](https://www.bitbossbattles.io/images/logo.png)
-# v1.2.1: Release
+# v1.2.2: Release
 
 This software is provided "as-is" with no warranties.
 
@@ -33,6 +33,10 @@ Bit Boss Battles requires authorization in order to listen for bits notification
 ***
 
 ## 1.2:
+
+#### v1.2.2:
+- Added volume controls. Closes #11 feature request.
+- Volume is adjusted on the Settings page, visible when sound is enabled.
 
 #### v1.2.1:
 - Improved README file to better organize information.

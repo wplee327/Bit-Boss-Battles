@@ -51,6 +51,7 @@ var settingsSchema = {
 	hpMult: Number,
 	hpIncr: Number,
 	hpAmnt: Number,
+	volume: Number,
 	colorBg: String,
 	colorHb: String,
 	colorHm: String,

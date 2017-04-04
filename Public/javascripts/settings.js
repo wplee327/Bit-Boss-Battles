@@ -10,6 +10,7 @@ $(document).ready(function() {
 	var settings = {
 		overwrite: true,
 		sound: (getCookie("sound", "") == "true"),
+		volume: parseInt(getCookie("volume", "100")),
 		trans: (getCookie("trans", "") == "true"),
 		chroma: (getCookie("chroma", "") == "true"),
 		persistence: (getCookie("persistent", "") == "true"),
@@ -33,6 +34,10 @@ $(document).ready(function() {
 	if (settings.persistence) { $("#persistent").prop("checked", true); }
 	if (settings.bossHealing) { $("#bossheal").prop("checked", true); }
 	if (settings.avtrHidden) { $("#hideavtr").prop("checked", true); }
+	
+	$("#vol-label").html("Volume: " + settings.volume.toString() + "%");
+	$("#volume").val(settings.volume);
+	$(".volume").css("display", (settings.sound ? "inherit" : "none"));
 	
 	if (settings.hpMode == "progress")
 	{
@@ -154,6 +159,8 @@ $(document).ready(function() {
 		settings.sound = $(this).prop("checked");
 		setCookie({ name: "sound", newValue: settings.sound.toString() });
 		SendChanges();
+		
+		$(".volume").css("display", (settings.sound ? "inherit" : "none"));
 	});
 	
 	$("#trans").click(function() {
@@ -188,6 +195,18 @@ $(document).ready(function() {
 		
 		settings.avtrHidden = $(this).prop("checked");
 		setCookie({ name: "hideavtr", newValue: settings.avtrHidden.toString() });
+		SendChanges();
+	});
+	
+	$("#volume").on("input", function() {
+		
+		settings.volume = $(this).val();
+		$("#vol-label").html("Volume: " + settings.volume.toString() + "%");
+	});
+	
+	$("#volume").change(function() {
+		
+		setCookie({ name: "volume", newValue: settings.volume.toString() });
 		SendChanges();
 	});
 	

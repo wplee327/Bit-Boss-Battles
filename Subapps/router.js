@@ -71,6 +71,7 @@ router.get('/settings/*', function(req, res) {
 			hpMult: found.settings.hpMult,
 			hpIncr: found.settings.hpIncr,
 			hpAmnt: found.settings.hpAmnt,
+			volume: found.settings.volume,
 			colorBg: found.settings.colorBg,
 			colorHb: found.settings.colorHb,
 			colorHm: found.settings.colorHm,
@@ -108,6 +109,7 @@ router.post('/settings/*', function(req, res) {
 			hpMult: 1,
 			hpIncr: 100,
 			hpAmnt: 1000,
+			volume: 100,
 			colorBg: "rgba(34, 34, 34, 1)",
 			colorHb: "rgba(255, 0, 0, 1)",
 			colorHm: "rgba(255, 165, 0, 1)",
@@ -131,6 +133,8 @@ router.post('/settings/*', function(req, res) {
 		if (typeof(req.body.hpMult) == "string") { settings.hpMult = (isNaN(parseInt(req.body.hpMult)) ? 1 : parseInt(req.body.hpMult)); }
 		if (typeof(req.body.hpIncr) == "string") { settings.hpIncr = (isNaN(parseInt(req.body.hpIncr)) ? 100 : parseInt(req.body.hpIncr)); }
 		if (typeof(req.body.hpAmnt) == "string") { settings.hpAmnt = (isNaN(parseInt(req.body.hpAmnt)) ? 1000 : parseInt(req.body.hpAmnt)); }
+		
+		if (typeof(req.body.volume) == "string") { settings.volume = (isNaN(parseInt(req.body.volume)) ? 100 : parseInt(req.body.volume)); }
 		
 		if (typeof(req.body.colorBg) == "string") { settings.colorBg = req.body.colorBg; }
 		if (typeof(req.body.colorHb) == "string") { settings.colorHb = req.body.colorHb; }

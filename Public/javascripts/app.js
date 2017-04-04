@@ -138,6 +138,9 @@ $(document).ready(function () {
 
 			// Get the sound setting.
 			sound = (getCookie("sound", "") == "true");
+						
+			// Set the volume.
+			gainNode.gain.value = parseInt(getCookie("volume", "100")) / 100;
 
 			// Determine the background mode.
 			if (getCookie("trans", "") == "true") { $(".allcontainer").css("background-color", "rgba(0,0,0,0)"); }
@@ -225,6 +228,9 @@ $(document).ready(function () {
 					{
 						// Get the sound setting.
 						sound = response.sound;
+						
+						// Set the volume.
+						gainNode.gain.value = response.volume / 100;
 
 						// Determine the background mode.
 						if (response.trans) { $(".allcontainer").css("background-color", "rgba(0,0,0,0)"); }
@@ -680,7 +686,7 @@ $(document).ready(function () {
 		preload = true;
 		
 		// Plays the explosion sound if sound is enabled.
-		if (sound) { explosion.play(); }
+		if (sound) { explosions[0].play(); }
 		
 		// Create the explosion gif.
 		avatarimg.after('<img id="explodeimg" src="http://i.imgur.com/m9Ajapt.gif?a='+Math.random()+'"/>');

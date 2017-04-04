@@ -777,7 +777,8 @@ $(document).ready(function () {
 			error: function(data) {
 
 				// If the error is due to an unknown username,
-				if (data.responseJSON.status == 422)
+				if ((data.responseJSON.status == 404 && data.responseJSON.message == "User \"" + username + "\" was not found") ||
+					(data.responseJSON.status == 422 && data.responseJSON.message == "User \"" + username + "\" is unavailable"))
 				{
 					callback({ displayName: username, logo: null });
 				}

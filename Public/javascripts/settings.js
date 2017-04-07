@@ -39,7 +39,17 @@ $(document).ready(function() {
 	$("#volume").val(settings.volume);
 	$(".volume").css("display", (settings.sound ? "inherit" : "none"));
 	
-	if (settings.hpMode == "progress")
+	if (settings.hpMode == "strength")
+	{
+		$("input[type='radio'][name='hp'][value='strength']").click();
+		
+		$(".subsettings.showing").removeClass("showing").addClass("hidden");
+		$("#settings-strength").removeClass("hidden").addClass("showing");
+
+		$("p.showing").removeClass("showing").addClass("hidden");
+		$("#expl-strength").removeClass("hidden").addClass("showing");
+	}
+	else if (settings.hpMode == "progress")
 	{
 		$("input[type='radio'][name='hp'][value='progress']").click();
 		

@@ -1,5 +1,5 @@
 ![Bit Boss Battles](https://www.bitbossbattles.io/images/logo.png)
-# v1.2.3: Release
+# v1.2.3.1: Release
 
 This software is provided "as-is" with no warranties.
 
@@ -33,6 +33,9 @@ Bit Boss Battles requires authorization in order to listen for bits notification
 ***
 
 ## 1.2:
+
+#### v1.2.3.1:
+- Fixed Settings Page not preselecting Strength Mode when it's saved.
 
 #### v1.2.3:
 - Added Strength Mode. Closes #4 feature request.

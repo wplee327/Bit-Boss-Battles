@@ -521,7 +521,7 @@ $(document).ready(function () {
 					setCookie({ name: "maxHp", newValue: overkill.toString() });
 				}
 				// If the current mode is Overkill Plus,
-				if (hpType == "strength")
+				else if (hpType == "strength")
 				{
 					// Calculate the overkill amount.
 					overkill = Math.max(amount, 100);

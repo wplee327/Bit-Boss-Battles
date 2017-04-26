@@ -7,6 +7,7 @@ div.answer { padding: 10px; border: 1px solid #cccccc; border-radius: 4px; displ
 div.answer.act { display: inherit; }
 div.volume { display: none; }
 div.space { height: 25px; }
+div.help { margin-top: 25px; }
 div#status { border-bottom: 1px solid black; padding: 5px; text-align: center; }
 table { border-collapse: collapse; }
 tr { border-bottom: 1px solid black; }

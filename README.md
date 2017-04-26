@@ -1,5 +1,5 @@
 ![Bit Boss Battles](https://www.bitbossbattles.io/images/logo.png)
-# v1.3.0: Release
+# v1.3.0.1: Release
 
 This software is provided "as-is" with no warranties.
 
@@ -33,6 +33,9 @@ Bit Boss Battles requires authorization in order to listen for bits notification
 ***
 
 ## 1.3:
+
+#### v1.3.0.1:
+- Added Help Topic for subs/resubs that fail to damage/heal.
 
 #### v1.3.0:
 - Subscriptions can now optionally damage/heal the Bit Boss if enabled.

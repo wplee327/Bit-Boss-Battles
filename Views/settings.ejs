@@ -57,6 +57,16 @@
 					<input type="checkbox" id="hideavtr"><label for="hideavtr">Hidden Avatar</label><br>
 					<p class="tooltipy padded">When enabled, the Bit Boss's avatar will be hidden. This is useful for streamers who have concerns of viewers with inappropriate avatars becoming the Bit Boss.</p>
 				</div>
+				<h3>Subscriber Settings</h3><br>
+				<div class="tooltipable">
+					<input type="checkbox" id="subs"><label for="subs">Include Subscribers and Resubs</label><br>
+					<p class="tooltipy padded">When enabled, the act of subscribing/resubbing can also damage the Bit Boss or even heal themselves, rounded to the nearest dollar ($4.99 = 500HP).</p>
+				</div>
+				<div class="tooltipable" id="resubmultcontainer">
+					<p id="reauth" style="padding-left: 5px; background-color: #ff8888; color: #880000;">You MUST re-authorize BBB with Twitch to fully enable Subscriber integration.</p>
+					<label for="resubmult" style="padding-right: 5px;">Resub Multiplier</label><input type="number" id="resubmult" min="0" max="2" value="0.25" step="0.05"><br>
+					<p class="tooltipy padded">Adds additional damage/healing to the initial amount by multiplying each month of resubbing by this multiplier. Set to 0 to completely disregard resubs, and set to 1 to multiply the entire subscriber amount to each resub month. As an example, Kappa resubscribes to ResidentSleeper for his second month at $4.99, and the resub multipler is set to 0.5. Kappa will deal 500 damage for the initial month, plus 500 (sub amount) * 0.5 (multiplier) * 1 (resub months) = 250 damage.</p>
+				</div>
 				<h3>HP Settings</h3><br>
 				<div style="width: 50%; float: right;">
 					<div class="subsettings showing" id="settings-overkill">

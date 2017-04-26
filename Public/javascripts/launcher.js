@@ -79,7 +79,7 @@ $(document).ready(function() {
 
 	function LaunchTwitchAuth() {
 
-		window.open("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=" + twitchClientId + "&redirect_uri=" + twitchRedirectUri + "&scope=user_read", "", "width=400,height=512");
+		window.open("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=" + twitchClientId + "&redirect_uri=" + twitchRedirectUri + "&scope=user_read" + (getCookie("includesubs", "") == "true" ? "+channel_subscriptions" : ""), "", "width=400,height=512");
 	}
 	function LaunchStreamlabsAuth() {
 

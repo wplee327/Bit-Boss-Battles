@@ -5,11 +5,13 @@ var pingWait = null;
 var maxWait = 128000;
 var currentWait = 1000;
 
+var queue = [];
+
 var nonce = "";
 
 var preventReconnect = false;
 
-var messageCallback = [];
+var topics = [];
 
 function Jitter() {
 	
@@ -21,7 +23,7 @@ function NewNonce() {
 	var text = "";
 	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	
-	var length = Math.floor(Math.random() * 10) + 5;
+	var length = Math.floor(Math.random() * 10) + 10;
 
 	for(var i = 0; i < length; i++)
 	{
@@ -76,13 +78,13 @@ function Connect(url, success) {
 	ws.onmessage = InterpretMessage;
 }
 
-function Listen(topic, auth, msgCallback) {
+function Listen(topic, auth, msgCallback, listenFailure) {
 	
 	if (ws != null)
 	{
 		if (ws.readyState == ws.OPEN)
 		{
-			nonce = NewNonce();
+			var nonce = NewNonce();
 			var command = {
 				"type": "LISTEN",
 				"nonce": nonce,
@@ -92,50 +94,51 @@ function Listen(topic, auth, msgCallback) {
 				}
 			};
 			
-			console.log(command);
 			ws.send(JSON.stringify(command));
 			
-			for (var i = 0; i < messageCallback.length; i++)
+			for (var i = 0; i < topics.length; i++)
 			{
-				if (messageCallback[i].topic == topic)
+				if (topics[i].topic == topic)
 				{
 					return;
 				}
 			}
 			
-			messageCallback.push({ topic: topic, callback: msgCallback });
+			queue.push({ topic: topic, nonce: nonce, callback: msgCallback, listenFailure: listenFailure });
 		}
 	}
 }
 
 //function Fake(topic, msgCallback) {
 //	
-//	messageCallback.push({ topic: topic, callback: msgCallback });
+//	topics.push({ topic: topic, callback: msgCallback });
 //}
 
 function InterpretMessage(message) {
-	
-	console.log(message);
 	
 	var parsed = JSON.parse(message.data);
 	
 	if (parsed.type == "RESPONSE")
 	{
-		if (parsed.nonce != nonce)
+		for (var i = 0; i < queue.length; i++)
 		{
-			preventReconnect = true;
-			ws.close();
+			if (queue[i].nonce == parsed.nonce)
+			{
+				var queued = queue[i];
+				queue.splice(i, 1);
+				
+				if (parsed.error != "")
+				{
+					if (queued.listenFailure) { queued.listenFailure(parsed.error); }
+					console.log("Failed Listen: " + queued.topic);
+					return;
+				}
+				
+				topics.push(queued);
+				console.log("Listened to " + queued.topic);
+				return;
+			}
 		}
-		
-		if (parsed.error != "")
-		{
-			console.log(parsed.error);
-			preventReconnect = true;
-			ws.close();
-			messageCallback = [];
-		}
-		
-		return;
 	}
 	
 	if (parsed.type == "PONG")
@@ -156,15 +159,22 @@ function InterpretMessage(message) {
 	
 	if (parsed.type == "MESSAGE")
 	{
-		for (var i = 0; i < messageCallback.length; i++)
+		for (var i = 0; i < topics.length; i++)
 		{
-			if (messageCallback[i].topic == parsed.data.topic)
+			if (topics[i].topic == parsed.data.topic)
 			{
-				messageCallback[i].callback(JSON.parse(parsed.data.message));
+				try
+				{
+					topics[i].callback(JSON.parse(parsed.data.message));
+					console.log("Stringified internal data. " + parsed.data.topic);
+				}
+				catch (e)
+				{
+					topics[i].callback(parsed.data.message);
+					console.log("Non-stringified internal data. " + parsed.data.topic);
+				}
 				return;
 			}
 		}
-		
-		console.log("Found no use for previous message.");
 	}
 }

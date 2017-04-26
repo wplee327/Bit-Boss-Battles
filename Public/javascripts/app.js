@@ -54,6 +54,10 @@ $(document).ready(function () {
 	var loss = 0;
 	var overkill = null;
 	
+	// Subscriber variables
+	var includeSubs = false;
+	var resubMultiplier = 0.25;
+	
 	// Streamlabs variables
 	var slToken = "";
 	var slRefresh = "";
@@ -129,6 +133,10 @@ $(document).ready(function () {
 
 			// Get the Streamlabs token.
 			slRefresh = getCookie("refrsl", "");
+			
+			// Get subscriber settings.
+			includeSubs = (getCookie("includesubs", "") == "true");
+			resubMultiplier = parseFloat(getCookie("resubmult", "0.25"));
 
 			// Get the user ID.
 			userId = getCookie("userid", "");
@@ -226,6 +234,10 @@ $(document).ready(function () {
 					}
 					else
 					{
+						// Get subscriber settings.
+						includeSubs = response.includeSubs;
+						resubMultiplier = response.resubMult;
+						
 						// Get the sound setting.
 						sound = response.sound;
 						
@@ -325,7 +337,13 @@ $(document).ready(function () {
 					GetNewBoss();
 
 					// Listen for bits events using the streamer's channel ID and OAuth token.
-					Listen("channel-bitsevents." + userId, oauth, InterpretData);
+					Listen("channel-bitsevents." + userId, oauth, ProcessBits, function(error) {
+						
+						$("body").html("<h1 style='color: red;'>ERROR. FAILED BITS LISTEN.</h1><p>" + error + "</p>");
+					});
+					
+					// If the streamer wants to include subscribers, listen for subscriber events using the streamer's channel ID and OAuth token.
+					if (includeSubs) { Listen("channel-subscribe-events-v1." + userId, oauth, ProcessSubs); }
 				});
 				
 				$.post("./analytics/" + userId, { lastAccess: new Date().getTime(), partner: data.partnered }, function (res) { if (res == "success") { } });
@@ -348,8 +366,8 @@ $(document).ready(function () {
 		}
 	}
 	
-	// PubSub Message Callback. Interprets bits event messages.
-	function InterpretData(message) {
+	// PubSub Message Callback. Processes bits events.
+	function ProcessBits(message) {
 		
 		// Validate data integrity.
 		if (!message) { return; }
@@ -388,8 +406,71 @@ $(document).ready(function () {
 		}
 	}
 	
-	// PubSub Message Callback. Interprets bits event messages.
-	function InterpretDonation(donation) {
+	// PubSub Message Callback. Processes subscriber events.
+	function ProcessSubs(message) {
+		
+		// Validate data integrity.
+		if (!message) { return; }
+		if (!message.user_name) { return; }
+		if (!message.sub_plan) { return; }
+		if (!message.months) { return; }
+		
+		// If the nextBoss variable is empty, then no transition is taking place.
+		if (nextBoss == "")
+		{
+			// Get information about the user who cheered.
+			GetUserInfo(message.user_name, function(info) {
+				
+				// Reset the attacker display.
+				$("#attackerdisplay").css({
+					
+					"opacity": "0"
+				});
+				
+				// Calculate the initial amount of HP to damage or heal by.
+				var amount = 0;
+				
+				if (message.sub_plan == "Prime" || message.sub_plan == "1000")
+				{
+					amount = 500;
+				}
+				else if (message.sub_plan == "2000")
+				{
+					amount = 1000;
+				}
+				else if (message.sub_plan == "3000")
+				{
+					amount = 2500;
+				}
+				else
+				{
+					return;
+				}
+				
+				// Add additional damage/healing based on the resub multiplier.
+				amount += amount * (message.months - 1) * resubMultiplier;
+				
+				// If the attacker is the current Bit Boss,
+				if (info.displayName == $("#name").html())
+				{
+					// If the Boss Heal setting is on, then heal. If not, do nothing.
+					if (bossHeal)
+					{
+						Heal(amount, message.user_name, info.displayName, "sub");
+					}
+				}
+				// Else, the attacker is not the current Bit Boss.
+				else
+				{
+					// Strike the Bit Boss.
+					Strike(amount, message.user_name, info.displayName, "sub");
+				}
+			});
+		}
+	}
+	
+	// Streamlabs Message Callback. Processes donation events.
+	function ProcessDonation(donation) {
 		
 		// If the nextBoss variable is empty, then no transition is taking place.
 		if (nextBoss == "")
@@ -409,21 +490,21 @@ $(document).ready(function () {
 					// If the Boss Heal setting is on, then heal. If not, do nothing.
 					if (bossHeal)
 					{
-						Heal(Math.floor(donation.amount * 100), donation.name, info.displayName, true);
+						Heal(Math.floor(donation.amount * 100), donation.name, info.displayName, "donation");
 					}
 				}
 				// Else, the attacker is not the current Bit Boss.
 				else
 				{
 					// Strike the Bit Boss.
-					Strike(Math.floor(donation.amount * 100), donation.name, info.displayName, true);
+					Strike(Math.floor(donation.amount * 100), donation.name, info.displayName, "donation");
 				}
 			});
 		}
 	}
 	
 	// Heals the Bit Boss by the given amount.
-	function Heal(amount, healer, display, donation) {
+	function Heal(amount, healer, display, type) {
 		
 		// If the nextBoss variable is empty, then no transition is taking place.
 		if (nextBoss == "")
@@ -436,8 +517,15 @@ $(document).ready(function () {
 			else if (amount < 10000) { milestone = "5000"; }
 			else { milestone = "10000"; }
 			
+			// The associated bits gif is the default to use.
+			var gif = "https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/light/animated/" + milestone + "/1.gif?a=" + Math.random();
+			
+			// Change the gif if the type is a donation or a subscription.
+			if (type == "donation") { gif = "./images/dollar.gif"; }
+			else if (type == "sub") { gif = "./images/twitch.gif"; }
+			
 			// Sets the attacker display.
-			$("#attackerdisplay").html("<img id='cheerimg' src='" + (donation ? "./images/dollar.gif" : "https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/light/animated/" + milestone + "/1.gif?a=" + Math.random()) + "'>" + display + " heals!");
+			$("#attackerdisplay").html("<img id='cheerimg' src='" + gif + "'>" + display + " heals!");
 			$("#attackerdisplay").stop().animate({ "opacity": "1" }, 1000, "linear", function() { setTimeout(function() { $("#attackerdisplay").css("opacity", "0"); $("#attackerdisplay").html("&nbsp;"); }, 1000) });
 			
 			// Remove the current strike gif if it exists.
@@ -459,7 +547,7 @@ $(document).ready(function () {
 	}
 	
 	// Strikes the Bit Boss, damaging them by the given amount.
-	function Strike(amount, attacker, display, donation) {
+	function Strike(amount, attacker, display, type) {
 		
 		// If the nextBoss variable is empty, then no transition is taking place.
 		if (nextBoss == "")
@@ -472,8 +560,15 @@ $(document).ready(function () {
 			else if (amount < 10000) { milestone = "5000"; }
 			else { milestone = "10000"; }
 			
+			// The associated bits gif is the default to use.
+			var gif = "https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/light/animated/" + milestone + "/1.gif?a=" + Math.random();
+			
+			// Change the gif if the type is a donation or a subscription.
+			if (type == "donation") { gif = "./images/dollar.gif"; }
+			else if (type == "sub") { gif = "./images/twitch.gif"; }
+			
 			// Sets the attacker display.
-			$("#attackerdisplay").html("<img id='cheerimg' src='" + (donation ? "./images/dollar.gif" : "https://d3aqoihi2n8ty8.cloudfront.net/actions/cheer/light/animated/" + milestone + "/1.gif?a=" + Math.random()) + "'>" + display + " attacks!");
+			$("#attackerdisplay").html("<img id='cheerimg' src='" + gif + "'>" + display + " attacks!");
 			$("#attackerdisplay").stop().animate({ "opacity": "1" }, 1000, "linear", function() { setTimeout(function() { $("#attackerdisplay").css("opacity", "0"); $("#attackerdisplay").html("&nbsp;"); }, 1000) });
 			
 			// Get a random strike image based on the highest cheer milestone.
@@ -884,7 +979,7 @@ $(document).ready(function () {
 			var donation = tipQueue[0];
 			tipQueue.splice(0, 1);
 
-			InterpretDonation(donation);
+			ProcessDonation(donation);
 		}
 	}
 	
@@ -1035,7 +1130,7 @@ $(document).ready(function () {
 		}
 	}, (1000/60));
 	
-//	Fake("topic", InterpretData);
+//	Fake("topic", ProcessBits);
 //	
 //	$("#fake").click(function() {
 //		InterpretMessage({ data: '{"type":"MESSAGE","data":{"topic":"topic","message":"{\\"user_name\\":\\"mrseniorfloofypants\\",\\"bits_used\\":20,\\"context\\":\\"cheer\\"}"}}' });

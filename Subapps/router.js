@@ -76,7 +76,9 @@ router.get('/settings/*', function(req, res) {
 			colorHb: found.settings.colorHb,
 			colorHm: found.settings.colorHm,
 			colorHf: found.settings.colorHf,
-			colorTx: found.settings.colorTx
+			colorTx: found.settings.colorTx,
+			includeSubs: found.settings.includeSubs,
+			resubMult: found.settings.resubMult
 		};
 		
 		res.json(settings);
@@ -114,7 +116,9 @@ router.post('/settings/*', function(req, res) {
 			colorHb: "rgba(255, 0, 0, 1)",
 			colorHm: "rgba(255, 165, 0, 1)",
 			colorHf: "rgba(0, 128, 0, 1)",
-			colorTx: "rgba(255, 255, 255, 1)"
+			colorTx: "rgba(255, 255, 255, 1)",
+			includeSubs: false,
+			resubMult: 0.25
 		};
 		
 		if (typeof(req.body.sound) == "string") { settings.sound = (req.body.sound == "true"); }
@@ -141,6 +145,9 @@ router.post('/settings/*', function(req, res) {
 		if (typeof(req.body.colorHm) == "string") { settings.colorHm = req.body.colorHm; }
 		if (typeof(req.body.colorHf) == "string") { settings.colorHf = req.body.colorHf; }
 		if (typeof(req.body.colorTx) == "string") { settings.colorTx = req.body.colorTx; }
+		
+		if (typeof(req.body.includeSubs) == "string") { settings.includeSubs = (req.body.includeSubs == "true"); }
+		if (typeof(req.body.resubMult) == "string") { settings.resubMult = (isNaN(parseFloat(req.body.resubMult)) ? 0.25 : parseFloat(req.body.resubMult)); }
 		
 		if (saidUser == null)
 		{

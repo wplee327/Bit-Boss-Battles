@@ -20,7 +20,7 @@ p.indent { text-indent: 25px; }
 p.padded { padding-left: 25px; }
 h4.topic>a { cursor: pointer; }
 
-hidden { display: none; }
+#resubmultcontainer { display: none; }
 
 p.tooltipy { display: none; }
 div.tooltipable:hover p.tooltipy { display: inherit; }

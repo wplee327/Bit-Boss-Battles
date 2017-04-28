@@ -7,6 +7,7 @@ div.answer { padding: 10px; border: 1px solid #cccccc; border-radius: 4px; displ
 div.answer.act { display: inherit; }
 div.volume { display: none; }
 div.space { height: 25px; }
+div.help { margin-top: 25px; }
 div#status { border-bottom: 1px solid black; padding: 5px; text-align: center; }
 table { border-collapse: collapse; }
 tr { border-bottom: 1px solid black; }
@@ -20,7 +21,7 @@ p.indent { text-indent: 25px; }
 p.padded { padding-left: 25px; }
 h4.topic>a { cursor: pointer; }
 
-hidden { display: none; }
+#resubmultcontainer { display: none; }
 
 p.tooltipy { display: none; }
 div.tooltipable:hover p.tooltipy { display: inherit; }

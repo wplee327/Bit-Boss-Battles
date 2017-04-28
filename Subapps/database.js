@@ -56,7 +56,9 @@ var settingsSchema = {
 	colorHb: String,
 	colorHm: String,
 	colorHf: String,
-	colorTx: String
+	colorTx: String,
+	includeSubs: Boolean,
+	resubMult: Number
 }
 
 var userSchema = mongoose.Schema({

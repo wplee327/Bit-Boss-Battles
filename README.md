@@ -1,6 +1,5 @@
 ![Bit Boss Battles](https://www.bitbossbattles.io/images/logo.png)
-# v1.2.3.1: Release
-
+# v1.3.0.1: Release
 This software is provided "as-is" with no warranties.
 
 Presented under the GPL v3 license.
@@ -31,6 +30,16 @@ Bit Boss Battles requires authorization in order to listen for bits notification
 # CHANGELOG:
 
 ***
+
+## 1.3:
+
+#### v1.3.0.1:
+- Added Help Topic for subs/resubs that fail to damage/heal.
+
+#### v1.3.0:
+- Subscriptions can now optionally damage/heal the Bit Boss if enabled.
+- Resubs can deal additional damage/healing based on a multiplier.
+- Including subs/resubs requires additional Twitch permissions.
 
 ## 1.2:
 

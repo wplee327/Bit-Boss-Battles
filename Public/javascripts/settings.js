@@ -25,8 +25,22 @@ $(document).ready(function() {
 		colorHb: getCookie("colorhb", "rgba(255, 0, 0, 1)"),
 		colorHm: getCookie("colorhm", "rgba(255, 165, 0, 1)"),
 		colorHf: getCookie("colorhf", "rgba(0, 128, 0, 1)"),
-		colorTx: getCookie("colortx", "rgba(255, 255, 255, 1)")
+		colorTx: getCookie("colortx", "rgba(255, 255, 255, 1)"),
+		includeSubs: (getCookie("includesubs", "") == "true"),
+		resubMult: parseFloat(getCookie("resubmult", "0.25"))
 	};
+	
+	if (settings.includeSubs)
+	{
+		$("#subs").prop("checked", true);
+		$("#resubmultcontainer").css("display", "inherit");
+	}
+	$("#resubmult").val(settings.resubMult);
+	
+	if (getCookie("hassubscope", "") == "true")
+	{
+		$("#reauth").css("display", "none");
+	}
 	
 	if (settings.sound) { $("#sound").prop("checked", true); }
 	if (settings.trans) { $("#trans").prop("checked", true); }
@@ -161,6 +175,22 @@ $(document).ready(function() {
 		setCookie({ name: "colorhf", newValue: settings.colorHf });
 		setCookie({ name: "colortx", newValue: settings.colorTx });
 		
+		SendChanges();
+	});
+	
+	$("#subs").click(function() {
+		
+		settings.includeSubs = $(this).prop("checked");
+		setCookie({ name: "includesubs", newValue: settings.includeSubs.toString() });
+		SendChanges();
+		
+		$("#resubmultcontainer").css("display", (settings.includeSubs ? "inherit" : "none"));
+	});
+	
+	$("#resubmult").change(function() {
+		
+		settings.resubMult = $(this).val();
+		setCookie({ name: "resubmult", newValue: settings.resubMult.toString() });
 		SendChanges();
 	});
 	
